@@ -8,9 +8,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   'assets/images/homeBanner.png',
@@ -39,15 +40,23 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 20),
               ],
             ),
-            const Text(
-              'About Us',
-              style: TextStyle(
-                fontWeight: FontWeight.w600, // Semi-bold
-                fontSize: 34,
-                letterSpacing: -0.03,
-                color: Color(0xFF1B1B1B),
+            Container(
+              width: double.infinity, // This makes the container take max width
+              color: Colors.grey[200], // Optional: for visual debugging
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'About Us',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, // Semi-bold
+                      fontSize: 34,
+                      letterSpacing: -0.03,
+                      color: Color(0xFF1B1B1B),
+                    ),
+                  ),
+                ],
               ),
-              textAlign: TextAlign.left,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
