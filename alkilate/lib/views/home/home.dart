@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:alkilate/shared/shared.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -6,6 +7,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
