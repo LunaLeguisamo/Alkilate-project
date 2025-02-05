@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "94687048095",
+    "project_id": "alkilate-a4fbc",
+    "storage_bucket": "alkilate-a4fbc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94687048095:android:9aa3e9805df6bb756bcdaa",
+        "android_client_info": {
+          "package_name": "mvp.holberton.alkilate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94687048095-tvpo8ub0ok0c0u84lhge3me0bppjp2nd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mvp.holberton.alkilate",
+            "certificate_hash": "7a33e4e2c06f1c5d2b21c5d837eb9a46520e02bc"
+          }
+        },
+        {
+          "client_id": "94687048095-f9u3hh97gitcl28u0p0ud4joqmn7v3h3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFBtibNSl0G0BNHpkELKJsCqGtAHe76GE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94687048095-f9u3hh97gitcl28u0p0ud4joqmn7v3h3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
