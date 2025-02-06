@@ -14,10 +14,12 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
-              child: FaIcon(
-                FontAwesomeIcons.user,
-                size: 150,
+            Center(
+              child: SizedBox(
+                child: FaIcon(
+                  FontAwesomeIcons.user,
+                  size: 150,
+                ),
               ),
             ),
             LoginButton(
