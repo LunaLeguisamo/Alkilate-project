@@ -1,6 +1,6 @@
-import 'package:alkilate/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:alkilate/services/auth.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,17 +14,18 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const FlutterLogo(
-              size: 150,
-            ),
-            Flexible(
-              child: LoginButton(
-                text: 'Sign in with Google',
-                icon: FontAwesomeIcons.google,
-                color: Colors.blue,
-                loginMethod: AuthService().googleLogin,
+            SizedBox(
+              child: FaIcon(
+                FontAwesomeIcons.user,
+                size: 150,
               ),
-            )
+            ),
+            LoginButton(
+              text: 'Sign in with Google',
+              icon: FontAwesomeIcons.google,
+              color: Colors.blue,
+              loginMethod: AuthService().googleLogin,
+            ),
           ],
         ),
       ),

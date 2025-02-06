@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/auth.dart';
 import 'package:alkilate/views/login/login.dart';
-import 'package:alkilate/views/home/home.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -18,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
             child: Text('error'),
           );
         } else if (snapshot.hasData) {
-          return const HomeScreen();
+          return const Text('profile');
         } else {
           return const LoginScreen();
         }

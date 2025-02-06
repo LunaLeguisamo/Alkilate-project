@@ -7,10 +7,7 @@ class AuthService {
 
   Future<void> googleLogin() async {
     try {
-      final googleUser = await GoogleSignIn(
-              clientId:
-                  '94687048095-f9u3hh97gitcl28u0p0ud4joqmn7v3h3.apps.googleusercontent.com')
-          .signIn();
+      final googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) return;
 
@@ -21,7 +18,7 @@ class AuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(authCredential);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       // handle error
     }
   }
