@@ -39,7 +39,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Foto de perfil a la izquierda
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage('assets/images/profile1.png'), // Foto de perfil
+                  backgroundImage: NetworkImage('assets/images/profile.png'), // Foto de perfil
                 ),
                 SizedBox(width: 20),
                 
