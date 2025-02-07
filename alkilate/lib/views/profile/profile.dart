@@ -22,7 +22,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         title: Text('Profile'),
         actions: [
           CircleAvatar(
-            backgroundImage: NetworkImage('https://www.example.com/your-image-url.jpg'), // Foto de perfil
+            backgroundImage: NetworkImage('assets/images/image3.png'), // Foto de perfil
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -38,7 +38,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Foto de perfil a la izquierda
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage('https://www.example.com/your-image-url.jpg'), // Foto de perfil
+                  backgroundImage: NetworkImage('assets/images/image3.png'), // Foto de perfil
                 ),
                 SizedBox(width: 20),
                 
@@ -112,9 +112,9 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/images/image1.png', 'My Listing'),
+                _buildIconButton('assets/images/image3.png', 'My Listing'),
                 _buildIconButton('assets/images/image2.png', 'Pending'),
-                _buildIconButton('assets/images/image3.png', 'My orders'),
+                _buildIconButton('assets/images/image1.png', 'My orders'),
               ],
             ),
           ],
