@@ -18,6 +18,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 137, 191, 235),
         title: Text('Profile'),
         actions: [
           CircleAvatar(
@@ -111,9 +112,9 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/image1.png', 'My Listing'),
-                _buildIconButton('assets/image2.png', 'Pending'),
-                _buildIconButton('assets/image3.png', 'My orders'),
+                _buildIconButton('assets/images/image1.png', 'My Listing'),
+                _buildIconButton('assets/images/image2.png', 'Pending'),
+                _buildIconButton('assets/images/image3.png', 'My orders'),
               ],
             ),
           ],
