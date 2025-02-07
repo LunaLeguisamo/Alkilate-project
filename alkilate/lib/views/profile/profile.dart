@@ -11,8 +11,8 @@ class ProfileScreenState extends State<ProfileScreen> {
   bool _isEditing = false; // Variable que indica si estamos en modo edición
 
   // Controladores de los campos de texto para almacenar los valores ingresados
-  final TextEditingController _nameController = TextEditingController(text: 'John Doe');
-  final TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
+  final TextEditingController _nameController = TextEditingController(text: 'New name');
+  final TextEditingController _emailController = TextEditingController(text: 'newmail@example.com');
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Nombre centrado
                 Expanded(
                   child: Text(
-                    'Bienvenido name!',
+                    'Welcome!',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -55,9 +55,9 @@ class ProfileScreenState extends State<ProfileScreen> {
 
             // Correo electrónico
             Text(
-              'mail@gmail.com',
+              'mymail@gmail.com',
               style: TextStyle(fontSize: 18, color: const Color.fromARGB(255, 37, 136, 216)),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 30),
 
