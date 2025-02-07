@@ -20,9 +20,10 @@ class ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 137, 191, 235),
         title: Text('Profile'),
-        actions: [
+        toolbarTextStyle: TextStyle(color: Colors.white),
+        Expanded(child: Text('My profile', textAlign: TextAlign.right, style: TextStyle(fontSize: 6, color: const Color.fromARGB(255, 37, 136, 216)),),),
           CircleAvatar(
-            backgroundImage: NetworkImage('assets/images/image3.png'), // Foto de perfil
+            backgroundImage: NetworkImage('assets/images/profile.png'), // Foto de perfil
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -38,14 +39,14 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Foto de perfil a la izquierda
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage('assets/images/image3.png'), // Foto de perfil
+                  backgroundImage: NetworkImage('assets/images/profile.png'), // Foto de perfil
                 ),
                 SizedBox(width: 20),
                 
                 // Nombre centrado
                 Expanded(
                   child: Text(
-                    'Welcome!',
+                    'Welcome to ALkilate!',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -113,8 +114,8 @@ class ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildIconButton('assets/images/image3.png', 'My Listing'),
-                _buildIconButton('assets/images/image2.png', 'Pending'),
-                _buildIconButton('assets/images/image1.png', 'My orders'),
+                _buildIconButton('assets/images/image1.png', 'Pending'),
+                _buildIconButton('assets/images/image3.png', 'My orders'),
               ],
             ),
           ],
