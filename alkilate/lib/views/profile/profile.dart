@@ -23,7 +23,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         toolbarTextStyle: TextStyle(color: Colors.white),
         actions: [
           CircleAvatar(
-            backgroundImage: NetworkImage('assets/images/profile1.png'), // Foto de perfil
+            backgroundImage: NetworkImage('assets/images/profile.png'), // Foto de perfil
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -113,7 +113,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/images/image3.png', 'My Listing'),
+                _buildIconButton('assets/images/image2.png', 'My Listing'),
                 _buildIconButton('assets/images/image1.png', 'Pending'),
                 _buildIconButton('assets/images/image3.png', 'My orders'),
               ],
