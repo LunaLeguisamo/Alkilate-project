@@ -67,7 +67,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                 controller: _pageController,
                 count: images.length,
                 effect: ExpandingDotsEffect(
-                  activeDotColor: Colors.blue,
+                  activeDotColor: Colors.black,
                   dotHeight: 8.0,
                   dotWidth: 8.0,
                 ),
