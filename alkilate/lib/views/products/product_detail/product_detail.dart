@@ -30,7 +30,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final List<String> images = [
-      'assets/images/image1.png',
+      'assets/images/images.jpg',
       'assets/images/image2.png',
       'assets/images/image3.png',
     ];
