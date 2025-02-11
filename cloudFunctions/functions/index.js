@@ -1,3 +1,4 @@
+const logger = require("firebase-functions/logger");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const cors = require("cors");
@@ -11,13 +12,12 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-app.use(cors({ origin: true }));
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(cors({origin: true}));
 
 // Utility function to handle errors
 const handleError = (res, error, message = "Internal server error") => {
   logger.error(message, error);
-  return res.status(500).json({ message, error: error.message });
+  return res.status(500).json({message, error: error.message});
 };
 
 // Routes
@@ -35,7 +35,7 @@ app.get("/products/:id", async (req, res) => {
     const document = db.collection("products").doc(req.params.id);
     const product = await document.get();
     if (!product.exists) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({message: "Product not found"});
     }
     return res.status(200).json(product.data());
   } catch (error) {
@@ -59,15 +59,15 @@ app.get("/products", async (req, res) => {
     });
 
     // Handle price range separately
-    if (req.query.price_min || req.query.price_max) {
-      const price_min = parseFloat(req.query.price_min);
-      const price_max = parseFloat(req.query.price_max);
+    if (req.query.priceMin || req.query.priceMax) {
+      const priceMin = parseFloat(req.query.priceMin);
+      const priceMax = parseFloat(req.query.price_max);
 
-      if (!isNaN(price_min)) {
-        query = query.where("price", ">=", price_min);
+      if (!isNaN(priceMin)) {
+        query = query.where("price", ">=", priceMin);
       }
-      if (!isNaN(price_max)) {
-        query = query.where("price", "<=", price_max);
+      if (!isNaN(priceMax)) {
+        query = query.where("price", "<=", priceMax);
       }
     }
 
@@ -79,7 +79,7 @@ app.get("/products", async (req, res) => {
 
     if (response.length === 0) {
       logger.info("No products found matching the criteria.");
-      return res.status(404).json({ message: "No products found." });
+      return res.status(404).json({message: "No products found."});
     }
 
     logger.info("Products fetched successfully.");
@@ -96,11 +96,16 @@ app.post("/products", async (req, res) => {
 
     // Basic validation
     if (!productData.id || !productData.name || !productData.price) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({message: "Missing required fields"});
     }
 
-    await db.collection("products").doc(`/${productData.id}/`).create(productData);
-    return res.status(201).json({ message: "Product created", id: productData.id });
+    await db.collection("products").doc(`/${
+      productData.id
+    }/`).create(productData);
+    return res.status(201).json({
+      message: "Product created",
+      id: productData.id,
+    });
   } catch (error) {
     return handleError(res, error, "Error creating product");
   }
