@@ -22,7 +22,6 @@ class FirestoreService {
 
   /// Retrieves a list of product documents
   Future<List<Product>> getProductList() {
-    var user = AuthService().user!;
     var ref = _db.collection('Products');
     return ref.get().then((snapshot) {
       return snapshot.docs.map((doc) => Product.fromJson(doc.data())).toList();
