@@ -40,7 +40,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Barra de búsqueda con el botón de filtro
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -85,7 +84,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 1, // Hacemos que las tarjetas tengan aspecto cuadrado
+                  childAspectRatio: 1, 
                 ),
                 itemCount: products.length,
                 itemBuilder: (context, index) {
@@ -101,17 +100,16 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                           child: Image.asset(
                             products[index]['image']!,
-                            fit: BoxFit.cover, // La imagen llena todo el espacio
+                            fit: BoxFit.cover, 
                           ),
                         ),
-                        // Nombre del producto sobre la imagen
                         Positioned(
                           bottom: 10,
                           left: 10,
                           right: 10,
                           child: Container(
                             padding: EdgeInsets.all(8),
-                            color: Colors.black.withOpacity(0.6),  // Fondo oscuro con opacidad
+                            color: Colors.black.withOpacity(0.6),  
                             child: Text(
                               products[index]['name']!,
                               style: TextStyle(
@@ -135,7 +133,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
     );
   }
 
-  // Mostrar un cuadro de diálogo para seleccionar filtros
   Future<void> _showFilterDialog() async {
     showDialog(
       context: context,
@@ -145,7 +142,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Filtro por categoría con DropdownButton
               DropdownButton<String>(
                 isExpanded: true,
                 value: category ?? categories[0],
@@ -163,7 +159,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
               ),
               SizedBox(height: 16),
 
-              // Filtro por marca con DropdownButton
               DropdownButton<String>(
                 isExpanded: true,
                 value: brand ?? brands[0],
@@ -181,7 +176,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
               ),
               SizedBox(height: 16),
 
-              // Filtro por modelo con DropdownButton
               DropdownButton<String>(
                 isExpanded: true,
                 value: model ?? models[0],
@@ -236,7 +230,6 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // Aquí podrías aplicar los filtros seleccionados
               },
               child: Text("Apply Filters"),
             ),
