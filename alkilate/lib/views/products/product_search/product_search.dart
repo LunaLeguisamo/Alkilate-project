@@ -12,183 +12,70 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   TextEditingController searchController = TextEditingController();
 
   String? category;
-  double priceRangeMin = 0;
-  double priceRangeMax = 500;
   String? brand;
   String? model;
+  double priceRangeMin = 0;
+  double priceRangeMax = 3000;
   DateTime? selectedDate;
 
+  // Lista de productos con imágenes locales
   List<Map<String, String>> products = [
-    {'name': 'Cars', 'image': 'assets/images/imageses.jpg'},
-    {'name': 'Birthday', 'image': 'assets/images/cami.png'},
-    {'name': 'Sport', 'image': 'assets/images/imageses.jpg'},
+    {'name': 'Cars', 'image': 'assets/images/car.jpg'},
+    {'name': 'Birthday', 'image': 'assets/images/birthday.jpg'},
   ];
+
+  // Opciones de filtros
+  List<String> categories = ['Category', 'Electronics', 'Fashion', 'Sports', 'Toys'];
+  List<String> brands = ['Brand', 'Brand 1', 'Brand 2', 'Brand 3'];
+  List<String> models = ['Model', 'Model 1', 'Model 2'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Product Search'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              setState(() {
-                showFilters = !showFilters;
-              });
-            },
-          ),
-        ],
+        backgroundColor: Colors.black,
+        title: Text('Product Search', style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Barra de búsqueda
+            // Barra de búsqueda con el botón de filtro
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    showFilters = !showFilters;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: Colors.black),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Search products',
-                          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Search products',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.black),
                         ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.black12),
+                        ),
+                        prefixIcon: Icon(Icons.search, color: Colors.black),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  SizedBox(width: 8),
+                  // Botón de filtrado al lado de la barra de búsqueda
+                  IconButton(
+                    icon: Icon(Icons.filter_list, color: Colors.black),
+                    onPressed: () {
+                      _showFilterDialog();
+                    },
+                  ),
+                ],
               ),
             ),
 
-            // Mostrar los filtros si showFilters es verdadero
-            if (showFilters)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Filtro por categoría
-                    TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Category',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: Icon(Icons.category),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          category = value;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    // Rango de precio
-                    Text('Price Range', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    RangeSlider(
-                      values: RangeValues(priceRangeMin, priceRangeMax),
-                      min: 0,
-                      max: 1000,
-                      divisions: 10,
-                      labels: RangeLabels(
-                        '\$${priceRangeMin.toStringAsFixed(0)}',
-                        '\$${priceRangeMax.toStringAsFixed(0)}',
-                      ),
-                      onChanged: (RangeValues values) {
-                        setState(() {
-                          priceRangeMin = values.start;
-                          priceRangeMax = values.end;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    // Filtro por marca
-                    TextField(
-                      controller: TextEditingController(text: brand),
-                      decoration: InputDecoration(
-                        labelText: 'Brand',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: Icon(Icons.branding_watermark),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          brand = value;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    // Filtro por modelo
-                    TextField(
-                      controller: TextEditingController(text: model),
-                      decoration: InputDecoration(
-                        labelText: 'Model',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: Icon(Icons.monitor_heart_sharp),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          model = value;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    // Filtro por fecha
-                    ElevatedButton(
-                      onPressed: () async {
-                        final DateTime? picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-                        if (picked != null && picked != selectedDate) {
-                          setState(() {
-                            selectedDate = picked;
-                          });
-                        }
-                      },
-                      child: Text(
-                        selectedDate == null
-                            ? 'Select Rent Date'
-                            : 'Selected Date: ${selectedDate!.toLocal()}'.split(' ')[0],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                  ],
-                ),
-              ),
-
-            // Lista de productos en formato más estético
+            // Lista de productos
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
@@ -198,7 +85,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 1, // Hacemos que las tarjetas tengan aspecto cuadrado
                 ),
                 itemCount: products.length,
                 itemBuilder: (context, index) {
@@ -207,29 +94,32 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
                           child: Image.asset(
                             products[index]['image']!,
-                            height: 120,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.cover, // La imagen llena todo el espacio
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            products[index]['name']!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                        // Nombre del producto sobre la imagen
+                        Positioned(
+                          bottom: 10,
+                          left: 10,
+                          right: 10,
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            color: Colors.black.withOpacity(0.6),  // Fondo oscuro con opacidad
+                            child: Text(
+                              products[index]['name']!,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
@@ -242,6 +132,117 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // Mostrar un cuadro de diálogo para seleccionar filtros
+  Future<void> _showFilterDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Filters"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Filtro por categoría con DropdownButton
+              DropdownButton<String>(
+                isExpanded: true,
+                value: category ?? categories[0],
+                items: categories.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newCategory) {
+                  setState(() {
+                    category = newCategory;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
+
+              // Filtro por marca con DropdownButton
+              DropdownButton<String>(
+                isExpanded: true,
+                value: brand ?? brands[0],
+                items: brands.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newBrand) {
+                  setState(() {
+                    brand = newBrand;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
+
+              // Filtro por modelo con DropdownButton
+              DropdownButton<String>(
+                isExpanded: true,
+                value: model ?? models[0],
+                items: models.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newModel) {
+                  setState(() {
+                    model = newModel;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
+
+              // Filtro por fecha
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                ),
+                onPressed: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (picked != null && picked != selectedDate) {
+                    setState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                },
+                child: Text(
+                  selectedDate == null
+                      ? 'Select Rent Date'
+                      : 'Selected Date: ${selectedDate!.toLocal()}'.split(' ')[0],
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Aquí podrías aplicar los filtros seleccionados
+              },
+              child: Text("Apply Filters"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
