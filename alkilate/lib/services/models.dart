@@ -9,6 +9,8 @@ class User {
   final String name;
   final String email;
   final String password;
+  final String phoneNumber;
+  final String photoURL;
   final List<Comment> comments;
   final List<Product> products;
   final double rating;
@@ -21,6 +23,8 @@ class User {
     this.name = '',
     this.email = '',
     this.password = '',
+    this.phoneNumber = '',
+    this.photoURL = '',
     this.comments = const [],
     this.products = const [],
     this.rating = 0.0,

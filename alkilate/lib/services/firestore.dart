@@ -62,13 +62,16 @@ class FirestoreService {
   Future<void> checkAndCreateUserDocument(String uid) async {
     var userRef = _db.collection('Users').doc(uid);
     var snapshot = await userRef.get();
+    User? firebaseUser = FirebaseAuth.instance.currentUser;
 
     if (!snapshot.exists) {
       // Create a new user document with default data
       await userRef.set({
         'uid': uid,
-        'name': 'New User',
-        'email': '',
+        'name': firebaseUser!.displayName,
+        'email': firebaseUser.email,
+        'photoURL': firebaseUser.photoURL,
+        'phoneNumber': firebaseUser.phoneNumber,
         'dateCreated': DateTime.now().toIso8601String(),
         'isAdmin': false,
       });
