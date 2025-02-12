@@ -10,12 +10,13 @@
 - As a user, I want to ask about tools for a specific activity so that I can receive AI-based recommendations and a list of relevant products available in the app.
 
 ## Front-end
-![cf62f25e-5cb9-4ef5-937c-ed8d983cfc6c](https://github.com/user-attachments/assets/35906e1d-4698-4aab-9560-4c1a4d45f12e)
-![3c979ee0-3958-4902-aa9c-d9f28e47fefa](https://github.com/user-attachments/assets/e6773436-945d-4351-88c8-d38fe9971599)
-![4ee5b8d7-4d33-4b27-a31c-0495b2b34670](https://github.com/user-attachments/assets/441006a8-246c-4d57-8f46-1db52d760569)
-![29ab2ea8-070c-4cd0-9c3d-d74e2f030286](https://github.com/user-attachments/assets/231323d0-4289-4e63-8481-5265628bd5df)
-![8306375c-a7e0-4854-a124-235b1410a897](https://github.com/user-attachments/assets/b258469c-1e6e-41e2-8cf5-638cc9ddd8cc)
-![c74c9669-7c01-4d11-b2d5-66604df37f17](https://github.com/user-attachments/assets/ea71109b-49ce-4fad-8968-c90fab1f6ac7)
+![cf62f25e-5cb9-4ef5-937c-ed8d983cfc6c](https://github.com/user-attachments/assets/4286b5ba-88d0-448f-a3e8-1ec03287668e)
+![3c979ee0-3958-4902-aa9c-d9f28e47fefa](https://github.com/user-attachments/assets/dea7d458-48a9-47da-b569-4c61bf631099)
+![4ee5b8d7-4d33-4b27-a31c-0495b2b34670](https://github.com/user-attachments/assets/53b12f2a-f8f7-45c8-8a05-dd1c800d548c)
+![29ab2ea8-070c-4cd0-9c3d-d74e2f030286](https://github.com/user-attachments/assets/79712745-2cc3-4be6-ab8a-9095d86b1be3)
+![8306375c-a7e0-4854-a124-235b1410a897](https://github.com/user-attachments/assets/d09743e4-6838-467f-ba16-31a7717695d2)
+![c74c9669-7c01-4d11-b2d5-66604df37f17](https://github.com/user-attachments/assets/6db8d226-eb7e-4e45-93a5-f7bd2a74eb2c)
+
 
 # **System Architecture**
 

@@ -1,7 +1,8 @@
+import 'package:alkilate/views/products/product_detail/product_detail.dart';
 import 'package:flutter/material.dart';
 
 class ProductSearchScreen extends StatefulWidget {
-  const ProductSearchScreen({Key? key}) : super(key: key);
+  const ProductSearchScreen({super.key});
 
   @override
   ProductSearchScreenState createState() => ProductSearchScreenState();
@@ -21,11 +22,17 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   // Lista de productos con imágenes locales
   List<Map<String, String>> products = [
     {'name': 'Cars', 'image': 'assets/images/car.jpg'},
-    {'name': 'Birthday', 'image': 'assets/images/birthday.jpg'},
+    {'name': 'treadmill', 'image': 'assets/images/cami.png'},
   ];
 
   // Opciones de filtros
-  List<String> categories = ['Category', 'Electronics', 'Fashion', 'Sports', 'Toys'];
+  List<String> categories = [
+    'Category',
+    'Electronics',
+    'Fashion',
+    'Sports',
+    'Toys'
+  ];
   List<String> brands = ['Brand', 'Brand 1', 'Brand 2', 'Brand 3'];
   List<String> models = ['Model', 'Model 1', 'Model 2'];
 
@@ -84,44 +91,55 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 1, 
+                  childAspectRatio: 1,
                 ),
                 itemCount: products.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          child: Image.asset(
-                            products[index]['image']!,
-                            fit: BoxFit.cover, 
-                          ),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              ProductDetailScreen(),
                         ),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          right: 10,
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            color: Colors.black.withOpacity(0.6),  
-                            child: Text(
-                              products[index]['name']!,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                      );
+                    },
+                    child: Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            child: Image.asset(
+                              products[index]['image']!,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                      ],
+                          Positioned(
+                            bottom: 10,
+                            left: 10,
+                            right: 10,
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              // ignore: deprecated_member_use
+                              color: Colors.black.withOpacity(0.6),
+                              child: Text(
+                                products[index]['name']!,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -138,7 +156,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Select Filters"),
+          title: Text('Select Filters'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -214,7 +232,8 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                 child: Text(
                   selectedDate == null
                       ? 'Select Rent Date'
-                      : 'Selected Date: ${selectedDate!.toLocal()}'.split(' ')[0],
+                      : 'Selected Date: ${selectedDate!.toLocal()}'
+                          .split(' ')[0],
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -225,13 +244,13 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel"),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Apply Filters"),
+              child: Text('Apply Filters'),
             ),
           ],
         );

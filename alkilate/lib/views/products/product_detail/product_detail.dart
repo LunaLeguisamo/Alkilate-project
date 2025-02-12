@@ -30,7 +30,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final List<String> images = [
-      'assets/images/car.jpg',
+      'assets/images/cami.png',
       'assets/images/image2.png',
       'assets/images/image3.png',
     ];
@@ -139,7 +139,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
-                          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -148,7 +149,9 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  Text('Description:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Description:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text(
                     'Kickstart your workout routine with this high-quality electric treadmill, now available for rent! Perfect for those who want to exercise at home without committing to long-term investments or taking up too much space.',
@@ -157,28 +160,36 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   // Sección de características principales
                   SizedBox(height: 30),
-                  Text('Main Features:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Main Features:',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FeatureItem(
-                          text: 'Adjustable speed: Change the speed to match your fitness level.',
+                          text:
+                              'Adjustable speed: Change the speed to match your fitness level.',
                           icon: Icons.speed),
                       FeatureItem(
-                          text: 'Adjustable incline: Increase workout intensity by choosing different incline levels.',
+                          text:
+                              'Adjustable incline: Increase workout intensity by choosing different incline levels.',
                           icon: Icons.arrow_upward),
                       FeatureItem(
-                          text: 'Digital display: Shows data like speed, distance, time, and calories burned to track your progress.',
+                          text:
+                              'Digital display: Shows data like speed, distance, time, and calories burned to track your progress.',
                           icon: Icons.screen_search_desktop),
                       FeatureItem(
-                          text: 'Cushioning system: Reduces joint impact, providing a more comfortable running experience.',
+                          text:
+                              'Cushioning system: Reduces joint impact, providing a more comfortable running experience.',
                           icon: Icons.hotel),
                       FeatureItem(
-                          text: 'Sturdy construction: Made with durable materials, perfect for regular use.',
+                          text:
+                              'Sturdy construction: Made with durable materials, perfect for regular use.',
                           icon: Icons.build),
                       FeatureItem(
-                          text: 'Easy storage: Folds up easily to save space when not in use.',
+                          text:
+                              'Easy storage: Folds up easily to save space when not in use.',
                           icon: Icons.storage),
                     ],
                   ),
@@ -196,7 +207,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 class FeatureItem extends StatelessWidget {
   final String text;
   final IconData icon;
-  const FeatureItem({required this.text, required this.icon});
+  const FeatureItem({super.key, required this.text, required this.icon});
 
   @override
   Widget build(BuildContext context) {
