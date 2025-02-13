@@ -4,7 +4,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen({super.key});
+  final Product product;
+
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
   ProductDetailScreenState createState() => ProductDetailScreenState();
@@ -30,11 +32,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> images = [
-      'assets/images/cami.png',
-      'assets/images/image2.png',
-      'assets/images/image3.png',
-    ];
+    final List<String> images = widget.product.pictures;
 
     return Scaffold(
       appBar: AppBar(
@@ -87,7 +85,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Electric Treadmill for Rent – High-Quality, Adjustable Speed & Incline',
+                    widget.product.name,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -96,7 +94,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '\$299.99',
+                    '\$${widget.product.price}',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -155,7 +153,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Text(
-                    'Kickstart your workout routine with this high-quality electric treadmill, now available for rent! Perfect for those who want to exercise at home without committing to long-term investments or taking up too much space.',
+                    widget.product.brand,
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
 
