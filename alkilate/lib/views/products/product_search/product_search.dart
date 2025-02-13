@@ -1,5 +1,7 @@
 import 'package:alkilate/views/products/product_detail/product_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:alkilate/services/services.dart';
+import 'package:alkilate/shared/shared.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   const ProductSearchScreen({super.key});

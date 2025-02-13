@@ -1,5 +1,6 @@
+import 'package:alkilate/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:alkilate/services/auth.dart';
+import 'package:alkilate/services/services.dart';
 import 'package:alkilate/views/login/login.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -30,7 +31,24 @@ class ProfileScreenState extends State<ProfileScreen> {
             child: Text('error'),
           );
         } else if (snapshot.hasData) {
-          return profileBuilder();
+          return FutureBuilder<User>(
+            future: FirestoreService().getCurrentUser(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LoadingScreen();
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: ErrorMessage(message: snapshot.error.toString()),
+                );
+              } else if (snapshot.hasData) {
+                var user = snapshot.data!;
+                return profileBuilder(user);
+              } else {
+                return const Text(
+                    'No topics found in Firestore. Check database');
+              }
+            },
+          );
         } else {
           return const LoginScreen();
         }
@@ -38,7 +56,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget profileBuilder() {
+  Widget profileBuilder(user) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 137, 191, 235),
@@ -46,8 +64,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         toolbarTextStyle: TextStyle(color: Colors.white),
         actions: [
           CircleAvatar(
-            backgroundImage:
-                NetworkImage('assets/images/profile.png'), // Foto de perfil
+            backgroundImage: NetworkImage(user.photoURL), // Foto de perfil
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -63,15 +80,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Foto de perfil a la izquierda
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(
-                      'assets/images/profile.png'), // Foto de perfil
+                  backgroundImage:
+                      NetworkImage(user.photoURL), // Foto de perfil
                 ),
                 SizedBox(width: 20),
 
                 // Nombre centrado
                 Expanded(
                   child: Text(
-                    'Welcome to ALkilate!',
+                    'Welcome to ALkilate! ${user.name}',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -82,7 +99,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
             // Correo electrónico
             Text(
-              'mymail@gmail.com',
+              user.email,
               style: TextStyle(
                   fontSize: 18, color: const Color.fromARGB(255, 37, 136, 216)),
               textAlign: TextAlign.center,
@@ -139,8 +156,8 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/images/image2.png', 'My Listing'),
-                _buildIconButton('assets/images/image1.png', 'Pending'),
+                _buildIconButton('assets/images/image3.png', 'My Listing'),
+                _buildIconButton('assets/images/image2.png', 'Pending'),
                 _buildIconButton('assets/images/image3.png', 'My orders'),
               ],
             ),

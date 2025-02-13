@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "alkilate",
+            "cwd": "alkilate",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "alkilate (profile mode)",
+            "cwd": "alkilate",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "alkilate (release mode)",
+            "cwd": "alkilate",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
