@@ -24,9 +24,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         Navigator.pushNamed(context, '/product-search');
         break;
       case 2:
-        Navigator.pushNamed(context, '/orders');
+        Navigator.pushNamed(context, '/add-product');
         break;
       case 3:
+        Navigator.pushNamed(context, '/orders');
+        break;
+      case 4:
         Navigator.pushNamed(context, '/profile');
         break;
     }
@@ -67,6 +70,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
               activeIcon: Icon(FontAwesomeIcons.magnifyingGlass, size: 24),
               label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.plus, size: 20),
+              activeIcon: Icon(FontAwesomeIcons.plus, size: 24),
+              label: 'Add',
             ),
             BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.bagShopping, size: 20),

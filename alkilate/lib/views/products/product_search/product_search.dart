@@ -43,9 +43,9 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
     // Inside an async function
     FirestoreService().getProductList().then((products) {
       // Work with the products list here
-      products.forEach((product) {
+      for (var product in products) {
         print(product.name);
-      });
+      }
     }).catchError((error) {
       print('Error fetching products: $error');
     });

@@ -44,8 +44,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 var user = snapshot.data!;
                 return profileBuilder(user);
               } else {
-                return const Text(
-                    'No topics found in Firestore. Check database');
+                return const Text('No user found in Firestore. Check database');
               }
             },
           );

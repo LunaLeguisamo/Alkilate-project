@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:alkilate/services/models.dart' as app_models;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:alkilate/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreService {
@@ -33,9 +32,9 @@ class FirestoreService {
 
   /// Posts a product document to the product db
   Future<void> postProduct(app_models.Product product) async {
-    var user = AuthService().user!;
-    var ref = _db.collection('Products').doc(user.uid);
-    return ref.set(product.toJson());
+    var ref = _db.collection('products');
+    await ref.add(product.toJson());
+    return;
   }
 
   /// Retrieves the current logged-in user's data from Firestore
