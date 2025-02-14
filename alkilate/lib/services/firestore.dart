@@ -32,8 +32,15 @@ class FirestoreService {
 
   /// Posts a product document to the product db
   Future<void> postProduct(app_models.Product product) async {
-    var ref = _db.collection('products');
-    await ref.add(product.toJson());
+    var ref = _db.collection('products').doc(product.id);
+    await ref.set(product.toJson());
+    return;
+  }
+
+  /// Adds an order document to the orders db
+  Future<void> addOrder(app_models.Order order) async {
+    var ref = _db.collection('orders').doc(order.id);
+    await ref.set(order.toJson());
     return;
   }
 

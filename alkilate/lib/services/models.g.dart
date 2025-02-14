@@ -7,7 +7,7 @@ part of 'models.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-      id: json['id'] as String? ?? '',
+      uid: json['uid'] as String? ?? '',
       dateCreated: json['dateCreated'] == null
           ? null
           : DateTime.parse(json['dateCreated'] as String),
@@ -32,7 +32,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'id': instance.id,
+      'uid': instance.uid,
       'dateCreated': instance.dateCreated.toIso8601String(),
       'modifiedDate': instance.modifiedDate.toIso8601String(),
       'name': instance.name,
@@ -47,7 +47,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
     };
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as String?,
       dateCreated: json['dateCreated'] == null
           ? null
           : DateTime.parse(json['dateCreated'] as String),
@@ -70,7 +70,9 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       pictures: (json['pictures'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
-          const [],
+          const [
+            'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'
+          ],
       bankAccount: json['bankAccount'] as String? ?? '',
     );
 
@@ -93,7 +95,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
     };
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as String?,
       dateCreated: json['dateCreated'] == null
           ? null
           : DateTime.parse(json['dateCreated'] as String),
@@ -119,7 +121,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
     };
 
 Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
-      id: json['id'] as String? ?? '',
+      id: json['id'] as String?,
       dateCreated: json['dateCreated'] == null
           ? null
           : DateTime.parse(json['dateCreated'] as String),

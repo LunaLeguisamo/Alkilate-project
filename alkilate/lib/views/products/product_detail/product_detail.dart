@@ -2,6 +2,7 @@ import 'package:alkilate/services/models.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:alkilate/views/orders/orders.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -190,6 +191,26 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                           text:
                               'Easy storage: Folds up easily to save space when not in use.',
                           icon: Icons.storage),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OrderScreen(product: widget.product),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12.0, horizontal: 24.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: Text('Rent'),
+                        ),
+                      ),
                     ],
                   ),
                 ],

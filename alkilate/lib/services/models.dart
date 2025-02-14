@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 part 'models.g.dart';
 
 @JsonSerializable()
 class User {
-  final String id;
+  final String uid;
   final DateTime dateCreated;
   final DateTime modifiedDate;
   final String name;
@@ -17,7 +18,8 @@ class User {
   final bool isAdmin;
 
   User({
-    this.id = '',
+    this.uid = '',
+    String? id,
     DateTime? dateCreated,
     DateTime? modifiedDate,
     this.name = '',
@@ -55,7 +57,7 @@ class Product {
   final String bankAccount;
 
   Product({
-    this.id = '',
+    String? id,
     DateTime? dateCreated,
     DateTime? modifiedDate,
     this.owner = '',
@@ -68,10 +70,13 @@ class Product {
     this.deposit = 0.0,
     this.approved = false,
     this.comments = const [],
-    this.pictures = const [],
+    this.pictures = const [
+      'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'
+    ],
     this.bankAccount = '',
   })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now();
+        modifiedDate = modifiedDate ?? DateTime.now(),
+        id = id ?? Uuid().v4();
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
@@ -90,7 +95,7 @@ class Order {
   final String status;
 
   Order({
-    this.id = '',
+    String? id,
     DateTime? dateCreated,
     DateTime? modifiedDate,
     this.buyer = '',
@@ -99,7 +104,8 @@ class Order {
     this.totalPrice = 0.0,
     this.status = '',
   })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now();
+        modifiedDate = modifiedDate ?? DateTime.now(),
+        id = id ?? Uuid().v4();
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -116,7 +122,7 @@ class Comment {
   final double rating;
 
   Comment({
-    this.id = '',
+    String? id,
     DateTime? dateCreated,
     DateTime? modifiedDate,
     this.user = '',
@@ -124,7 +130,8 @@ class Comment {
     this.text = '',
     this.rating = 0.0,
   })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now();
+        modifiedDate = modifiedDate ?? DateTime.now(),
+        id = id ?? Uuid().v4();
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);
