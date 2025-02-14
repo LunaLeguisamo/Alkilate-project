@@ -8,8 +8,12 @@ part of 'models.dart';
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
       id: json['id'] as String? ?? '',
-      dateCreated: json['dateCreated'] as String? ?? '',
-      modifiedDate: json['modifiedDate'] as String? ?? '',
+      dateCreated: json['dateCreated'] == null
+          ? null
+          : DateTime.parse(json['dateCreated'] as String),
+      modifiedDate: json['modifiedDate'] == null
+          ? null
+          : DateTime.parse(json['modifiedDate'] as String),
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',
       password: json['password'] as String? ?? '',
@@ -29,8 +33,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated,
-      'modifiedDate': instance.modifiedDate,
+      'dateCreated': instance.dateCreated.toIso8601String(),
+      'modifiedDate': instance.modifiedDate.toIso8601String(),
       'name': instance.name,
       'email': instance.email,
       'password': instance.password,
@@ -44,8 +48,12 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       id: json['id'] as String? ?? '',
-      dateCreated: json['dateCreated'] as String? ?? '',
-      modifiedDate: json['modifiedDate'] as String? ?? '',
+      dateCreated: json['dateCreated'] == null
+          ? null
+          : DateTime.parse(json['dateCreated'] as String),
+      modifiedDate: json['modifiedDate'] == null
+          ? null
+          : DateTime.parse(json['modifiedDate'] as String),
       owner: json['owner'] as String? ?? '',
       name: json['name'] as String? ?? '',
       brand: json['brand'] as String? ?? '',
@@ -68,8 +76,8 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated,
-      'modifiedDate': instance.modifiedDate,
+      'dateCreated': instance.dateCreated.toIso8601String(),
+      'modifiedDate': instance.modifiedDate.toIso8601String(),
       'owner': instance.owner,
       'name': instance.name,
       'brand': instance.brand,
@@ -86,8 +94,12 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       id: json['id'] as String? ?? '',
-      dateCreated: json['dateCreated'] as String? ?? '',
-      modifiedDate: json['modifiedDate'] as String? ?? '',
+      dateCreated: json['dateCreated'] == null
+          ? null
+          : DateTime.parse(json['dateCreated'] as String),
+      modifiedDate: json['modifiedDate'] == null
+          ? null
+          : DateTime.parse(json['modifiedDate'] as String),
       buyer: json['buyer'] as String? ?? '',
       seller: json['seller'] as String? ?? '',
       product: json['product'] as String? ?? '',
@@ -97,8 +109,8 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated,
-      'modifiedDate': instance.modifiedDate,
+      'dateCreated': instance.dateCreated.toIso8601String(),
+      'modifiedDate': instance.modifiedDate.toIso8601String(),
       'buyer': instance.buyer,
       'seller': instance.seller,
       'product': instance.product,
@@ -108,8 +120,12 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
 
 Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       id: json['id'] as String? ?? '',
-      dateCreated: json['dateCreated'] as String? ?? '',
-      modifiedDate: json['modifiedDate'] as String? ?? '',
+      dateCreated: json['dateCreated'] == null
+          ? null
+          : DateTime.parse(json['dateCreated'] as String),
+      modifiedDate: json['modifiedDate'] == null
+          ? null
+          : DateTime.parse(json['modifiedDate'] as String),
       user: json['user'] as String? ?? '',
       product: json['product'] as String? ?? '',
       text: json['text'] as String? ?? '',
@@ -118,8 +134,8 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
 
 Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated,
-      'modifiedDate': instance.modifiedDate,
+      'dateCreated': instance.dateCreated.toIso8601String(),
+      'modifiedDate': instance.modifiedDate.toIso8601String(),
       'user': instance.user,
       'product': instance.product,
       'text': instance.text,

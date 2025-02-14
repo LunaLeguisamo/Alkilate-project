@@ -4,8 +4,8 @@ part 'models.g.dart';
 @JsonSerializable()
 class User {
   final String id;
-  final String dateCreated;
-  final String modifiedDate;
+  final DateTime dateCreated;
+  final DateTime modifiedDate;
   final String name;
   final String email;
   final String password;
@@ -18,8 +18,8 @@ class User {
 
   User({
     this.id = '',
-    this.dateCreated = '',
-    this.modifiedDate = '',
+    DateTime? dateCreated,
+    DateTime? modifiedDate,
     this.name = '',
     this.email = '',
     this.password = '',
@@ -29,7 +29,8 @@ class User {
     this.products = const [],
     this.rating = 0.0,
     this.isAdmin = false,
-  });
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -38,8 +39,8 @@ class User {
 @JsonSerializable()
 class Product {
   final String id;
-  final String dateCreated;
-  final String modifiedDate;
+  final DateTime dateCreated;
+  final DateTime modifiedDate;
   final String owner;
   final String name;
   final String brand;
@@ -55,8 +56,8 @@ class Product {
 
   Product({
     this.id = '',
-    this.dateCreated = '',
-    this.modifiedDate = '',
+    DateTime? dateCreated,
+    DateTime? modifiedDate,
     this.owner = '',
     this.name = '',
     this.brand = '',
@@ -69,7 +70,8 @@ class Product {
     this.comments = const [],
     this.pictures = const [],
     this.bankAccount = '',
-  });
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now();
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
@@ -79,8 +81,8 @@ class Product {
 @JsonSerializable()
 class Order {
   final String id;
-  final String dateCreated;
-  final String modifiedDate;
+  final DateTime dateCreated;
+  final DateTime modifiedDate;
   final String buyer;
   final String seller;
   final String product;
@@ -89,14 +91,15 @@ class Order {
 
   Order({
     this.id = '',
-    this.dateCreated = '',
-    this.modifiedDate = '',
+    DateTime? dateCreated,
+    DateTime? modifiedDate,
     this.buyer = '',
     this.seller = '',
     this.product = '',
     this.totalPrice = 0.0,
     this.status = '',
-  });
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now();
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -105,8 +108,8 @@ class Order {
 @JsonSerializable()
 class Comment {
   final String id;
-  final String dateCreated;
-  final String modifiedDate;
+  final DateTime dateCreated;
+  final DateTime modifiedDate;
   final String user;
   final String product;
   final String text;
@@ -114,13 +117,14 @@ class Comment {
 
   Comment({
     this.id = '',
-    this.dateCreated = '',
-    this.modifiedDate = '',
+    DateTime? dateCreated,
+    DateTime? modifiedDate,
     this.user = '',
     this.product = '',
     this.text = '',
     this.rating = 0.0,
-  });
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now();
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);

@@ -40,89 +40,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
 
   // Lista de productos con imágenes locales
   fetchedProducts() async {
-    // Inside an async function
-    FirestoreService().getProductList().then((products) {
-      // Work with the products list here
-      for (var product in products) {
-        print(product.name);
-      }
-    }).catchError((error) {
-      print('Error fetching products: $error');
-    });
-    List<Product> products = await FirestoreService().getProductList();
-    if (products.isEmpty) {
-      print(FirestoreService().getProductList());
-      products = [
-        Product(
-          id: '1',
-          dateCreated: '2021-09-01',
-          modifiedDate: '2021-09-01',
-          owner: '1',
-          name: 'Product 1',
-          brand: 'Brand 1',
-          category: 'Category 1',
-          location: 'Location 1',
-          price: 100,
-          availability: true,
-          deposit: 50,
-          approved: true,
-          comments: [],
-          pictures: ['assets/images/image1.png'],
-          bankAccount: 'Bank Account 1',
-        ),
-        Product(
-          id: '2',
-          dateCreated: '2021-09-01',
-          modifiedDate: '2021-09-01',
-          owner: '2',
-          name: 'Product 2',
-          brand: 'Brand 2',
-          category: 'Category 2',
-          location: 'Location 2',
-          price: 200,
-          availability: true,
-          deposit: 100,
-          approved: true,
-          comments: [],
-          pictures: ['assets/images/image2.png'],
-          bankAccount: 'Bank Account 2',
-        ),
-        Product(
-          id: '3',
-          dateCreated: '2021-09-01',
-          modifiedDate: '2021-09-01',
-          owner: '3',
-          name: 'Product 3',
-          brand: 'Brand 3',
-          category: 'Category 3',
-          location: 'Location 3',
-          price: 300,
-          availability: true,
-          deposit: 150,
-          approved: true,
-          comments: [],
-          pictures: ['assets/images/image3.png'],
-          bankAccount: 'Bank Account 3',
-        ),
-        Product(
-          id: '4',
-          dateCreated: '2021-09-01',
-          modifiedDate: '2021-09-01',
-          owner: '4',
-          name: 'Product 4',
-          brand: 'Brand 4',
-          category: 'Category 4',
-          location: 'Location 4',
-          price: 400,
-          availability: true,
-          deposit: 200,
-          approved: true,
-          comments: [],
-          pictures: ['assets/images/image3.png'],
-          bankAccount: 'Bank Account 4',
-        ),
-      ];
-    }
+    dynamic products = await FirestoreService().getProductList();
     return products;
   }
 
@@ -215,7 +133,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(15)),
-                            child: Image.asset(
+                            child: Image.network(
                               products[index].pictures[0],
                               fit: BoxFit.cover,
                             ),

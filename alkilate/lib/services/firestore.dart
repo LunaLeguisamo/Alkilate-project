@@ -8,7 +8,7 @@ class FirestoreService {
 
   /// Retrieves a single product document
   Future<app_models.Product> getProduct(String productId) async {
-    var ref = _db.collection('Products').doc(productId);
+    var ref = _db.collection('products').doc(productId);
     var snapshot = await ref.get();
     return app_models.Product.fromJson(snapshot.data() ?? {});
   }
@@ -22,7 +22,7 @@ class FirestoreService {
 
   /// Retrieves a list of product documents
   Future<List<app_models.Product>> getProductList() {
-    var ref = _db.collection('Products');
+    var ref = _db.collection('products');
     return ref.get().then((snapshot) {
       return snapshot.docs
           .map((doc) => app_models.Product.fromJson(doc.data()))

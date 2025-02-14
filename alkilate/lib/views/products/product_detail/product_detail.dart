@@ -54,7 +54,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: Image.asset(
+                      child: Image.network(
                         images[index],
                         fit: BoxFit.cover,
                       ),
