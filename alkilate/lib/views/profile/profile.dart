@@ -155,9 +155,10 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/images/image3.png', 'My Listing'),
-                _buildIconButton('assets/images/image2.png', 'Pending'),
-                _buildIconButton('assets/images/image3.png', 'My orders'),
+                _buildIconButton('assets/images/image3.png', 'My Listing', ''),
+                _buildIconButton('assets/images/image2.png', 'Pending', ''),
+                _buildIconButton(
+                    'assets/images/image3.png', 'My orders', '/user-orders'),
               ],
             ),
           ],
@@ -167,13 +168,12 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   // Widget para crear un botón con imagen
-  Widget _buildIconButton(String imagePath, String label) {
+  Widget _buildIconButton(String imagePath, String label, String route) {
     return Column(
       children: [
         ElevatedButton(
           onPressed: () {
-            // Acción cuando el botón es presionado
-            print('$label pressed');
+            Navigator.pushNamed(context, route);
           },
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

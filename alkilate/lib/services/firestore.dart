@@ -13,11 +13,24 @@ class FirestoreService {
     return app_models.Product.fromJson(snapshot.data() ?? {});
   }
 
-  /// Retrieves a single product document
+  /// Retrieves a single user document
   Future<app_models.User> getUser(String userId) async {
     var ref = _db.collection('Users').doc(userId);
     var snapshot = await ref.get();
     return app_models.User.fromJson(snapshot.data() ?? {});
+  }
+
+  /// Retrieves a list of order documents
+  Future<List<app_models.Order>> getOrderList() {
+    var ref = _db
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('orders');
+    return ref.get().then((snapshot) {
+      return snapshot.docs
+          .map((doc) => app_models.Order.fromJson(doc.data()))
+          .toList();
+    });
   }
 
   /// Retrieves a list of product documents
@@ -34,6 +47,30 @@ class FirestoreService {
   Future<void> postProduct(app_models.Product product) async {
     var ref = _db.collection('products').doc(product.id);
     await ref.set(product.toJson());
+    return;
+  }
+
+  /// Adds an order document to the user's orders db
+  Future<void> addOrderToUser(app_models.Order order) async {
+    var ref = _db
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('orders')
+        .doc(order.id);
+    await ref.set(order.toJson());
+    return;
+  }
+
+  /// Cancel an order document
+  Future<void> cancelOrder(String orderId) async {
+    var ref = _db
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('orders')
+        .doc(orderId);
+    await ref.delete();
+    var ref2 = _db.collection('orders').doc(orderId);
+    await ref2.delete();
     return;
   }
 

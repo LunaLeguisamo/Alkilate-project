@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/services.dart';
 import 'package:alkilate/views/login/login.dart';
 import 'package:alkilate/shared/shared.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:http/http.dart' as http;
 
 class OrderScreen extends StatefulWidget {
   final Product product;
@@ -40,9 +43,10 @@ class _OrderScreenState extends State<OrderScreen> {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Order order = Order(
-                  product: widget.product.id,
+                  product: widget.product.name,
+                  productId: widget.product.id,
                   seller: widget.product.owner,
                   buyer: AuthService().user?.uid ?? '',
                   status: 'pending',
@@ -50,8 +54,30 @@ class _OrderScreenState extends State<OrderScreen> {
                   dateCreated: DateTime.now(),
                   modifiedDate: DateTime.now(),
                 );
-                launchURL(context);
+                // Make an HTTP request to a specific URL
+                final response = await http.post(
+                  Uri.parse('https://app-p7vfglazhq-uc.a.run.app/checkout'),
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                  },
+                  body: jsonEncode(<String, dynamic>{
+                    'item': widget.product.name,
+                    'price': widget.product.price,
+                    'id': order.id,
+                  }),
+                );
+                if (response.statusCode == 200) {
+                  // If the server returns a 200 OK response, parse the JSON
+                  final responseData = jsonDecode(response.body);
+                  debugPrint('Order created: $responseData');
+                } else {
+                  // If the server did not return a 200 OK response, throw an exception
+                  throw Exception('Failed to create order');
+                }
+                // ignore: use_build_context_synchronously
+                launchURL(context, jsonDecode(response.body));
                 FirestoreService().addOrder(order);
+                FirestoreService().addOrderToUser(order);
               },
               child: Text('Add Order'),
             ),
@@ -62,10 +88,10 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-void launchURL(BuildContext context) async {
+void launchURL(BuildContext context, url) async {
   try {
     await launchUrl(
-      Uri.parse('https://flutter.dev'),
+      Uri.parse(url),
       customTabsOptions: CustomTabsOptions(
         colorSchemes: CustomTabsColorSchemes.defaults(
           toolbarColor: Theme.of(context).primaryColor,
@@ -86,6 +112,7 @@ void launchURL(BuildContext context) async {
       ),
     ).then((_) {
       // This callback is called when the browser is closed
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, '/'); // Redirect to the desired screen
     });
   } catch (e) {

@@ -105,6 +105,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       buyer: json['buyer'] as String? ?? '',
       seller: json['seller'] as String? ?? '',
       product: json['product'] as String? ?? '',
+      productId: json['productId'] as String? ?? '',
       totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0.0,
       status: json['status'] as String? ?? '',
     );
@@ -116,6 +117,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'buyer': instance.buyer,
       'seller': instance.seller,
       'product': instance.product,
+      'productId': instance.productId,
       'totalPrice': instance.totalPrice,
       'status': instance.status,
     };

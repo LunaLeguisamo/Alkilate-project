@@ -91,6 +91,7 @@ class Order {
   final String buyer;
   final String seller;
   final String product;
+  final String productId;
   final double totalPrice;
   final String status;
 
@@ -101,6 +102,7 @@ class Order {
     this.buyer = '',
     this.seller = '',
     this.product = '',
+    this.productId = '',
     this.totalPrice = 0.0,
     this.status = '',
   })  : dateCreated = dateCreated ?? DateTime.now(),
