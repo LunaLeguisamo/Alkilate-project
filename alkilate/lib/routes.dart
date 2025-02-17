@@ -5,6 +5,7 @@ import 'package:alkilate/views/products/product_search/product_search.dart';
 import 'package:alkilate/views/profile/profile.dart';
 import 'package:alkilate/views/products/add_product/add_product.dart';
 import 'package:alkilate/views/profile/user_orders.dart';
+import 'package:alkilate/shared/calendar.dart';
 
 var appRoutes = {
   '/': (context) => HomeScreen(),
@@ -14,4 +15,5 @@ var appRoutes = {
   '/product-search': (context) => ProductSearchScreen(),
   '/profile': (context) => ProfileScreen(),
   '/user-orders': (context) => UserOrdersScreen(),
+  '/calendar': (context) => CalendarEventsWidget(),
 };

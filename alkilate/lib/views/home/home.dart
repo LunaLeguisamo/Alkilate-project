@@ -143,6 +143,11 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () => Navigator.pushNamed(context, '/profile'),
                     child: const Text('Profile'),
                   ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/calendar'),
+                    child: const Text('Calendar'),
+                  ),
                 ],
               ),
             ),
