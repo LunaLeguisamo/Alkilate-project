@@ -17,6 +17,7 @@ dependencies:
   firebase_core: ^3.11.0 # Use a version compatible with firebase_auth
   font_awesome_flutter: ^10.8.0
   firebase_vertexai: ^1.2.0
+  google_generative_ai: ^0.4.6
 
 dev_dependencies:
   flutter_test:

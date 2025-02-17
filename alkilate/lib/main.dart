@@ -3,15 +3,19 @@ import 'package:alkilate/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'firebase_options.dart';
+import 'package:firebase_vertexai/firebase_vertexai.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-from google import genai
+// Initialize FirebaseApp
+await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
 
-client = genai.Client(api_key="YOUR_API_KEY")
-response = client.models.generate_content(
-    model="gemini-2.0-flash", contents="Explain how AI works"
-)
-print(response.text)
-
+// Initialize the Vertex AI service and the generative model
+// Specify a model that supports your use case
+final model =
+      FirebaseVertexAI.instance.generativeModel(model: 'gemini-2.0-flash');
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -68,17 +72,3 @@ class _AppState extends State<MyApp> {
     );
   }
 }
-
-await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
-
-final model =
-  FirebaseVertexAI.instance.generativeModel(model: 'gemini-1.5-pro');
-
-// Provide a prompt that contains text
-final prompt = [Content.text('Write a theme for see products')];
-
-// To generate text output, call generateContent with the text input
-final response = await model.generateContent(prompt);
-print(response.text);
