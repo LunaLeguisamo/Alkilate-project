@@ -1,152 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/calendar/v3.dart' as calendar;
+import 'package:table_calendar/table_calendar.dart';
 
-class CalendarEventsWidget extends StatefulWidget {
-  const CalendarEventsWidget({super.key});
+class CalendarAvailabilityWidget extends StatefulWidget {
+  const CalendarAvailabilityWidget({super.key});
 
   @override
-  _CalendarEventsWidgetState createState() => _CalendarEventsWidgetState();
+  _CalendarAvailabilityWidgetState createState() =>
+      _CalendarAvailabilityWidgetState();
 }
 
-class _CalendarEventsWidgetState extends State<CalendarEventsWidget> {
-  List<calendar.Event> _events = [];
-  bool _isLoading = true;
+class _CalendarAvailabilityWidgetState
+    extends State<CalendarAvailabilityWidget> {
+  DateTime _focusedDay = DateTime.now();
+  DateTime _selectedDay = DateTime.now();
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchEvents();
-  }
+  // Rango de fechas seleccionadas para reserva (de 20 a 25 de febrero)
+  final DateTime _startAvailability = DateTime.utc(2024, 2, 20);
+  final DateTime _endAvailability = DateTime.utc(2024, 2, 25);
 
-  Future<void> _fetchEvents() async {
-    // Simulación de eventos
-    await Future.delayed(Duration(seconds: 2));
+  // Función para comprobar si un día está dentro del rango de fechas de reserva
+  bool _isDateReserved(DateTime day) {
+    // Ignorar la hora para comparación
+    DateTime dayStart = DateTime(day.year, day.month, day.day);
+    DateTime startAvailability = DateTime(_startAvailability.year,
+        _startAvailability.month, _startAvailability.day);
+    DateTime endAvailability = DateTime(
+        _endAvailability.year, _endAvailability.month, _endAvailability.day);
 
-    setState(() {
-      _events = [
-        calendar.Event(
-          summary: 'Reunión de equipo',
-          start: calendar.EventDateTime(
-              dateTime: DateTime.now().add(Duration(days: 1))),
-        ),
-        calendar.Event(
-          summary: 'Almuerzo con cliente',
-          start: calendar.EventDateTime(
-              dateTime: DateTime.now().add(Duration(days: 2))),
-        ),
-        calendar.Event(
-          summary: 'Presentación de proyecto',
-          start: calendar.EventDateTime(
-              dateTime: DateTime.now().add(Duration(days: 3))),
-        ),
-        calendar.Event(
-          summary: 'Revisión de código',
-          start: calendar.EventDateTime(
-              dateTime: DateTime.now().add(Duration(days: 4))),
-        ),
-        calendar.Event(
-          summary: 'Entrenamiento de Flutter',
-          start: calendar.EventDateTime(
-              dateTime: DateTime.now().add(Duration(days: 5))),
-        ),
-      ];
-      _isLoading = false;
-    });
+    return dayStart.isAfter(startAvailability.subtract(Duration(days: 1))) &&
+            dayStart.isBefore(endAvailability.add(Duration(days: 1))) ||
+        dayStart.isAtSameMomentAs(startAvailability) ||
+        dayStart.isAtSameMomentAs(endAvailability);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Eventos del Calendario'),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _events.isEmpty
-              ? Center(child: Text('No hay eventos próximos'))
-              : _buildCalendar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _isLoading = true;
-          });
-          _fetchEvents();
-        },
-        child: Icon(Icons.refresh),
-      ),
-    );
-  }
-
-  Widget _buildCalendar() {
-    DateTime today = DateTime.now();
-    List<DateTime> daysOfWeek = [
-      DateTime(today.year, today.month, today.day - today.weekday + 1), // Lunes
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 2), // Martes
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 3), // Miércoles
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 4), // Jueves
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 5), // Viernes
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 6), // Sábado
-      DateTime(
-          today.year, today.month, today.day - today.weekday + 7), // Domingo
-    ];
-
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-        childAspectRatio: 1.0,
-        crossAxisSpacing: 2.0,
-        mainAxisSpacing: 2.0,
-      ),
-      itemCount: 7,
-      itemBuilder: (context, index) {
-        DateTime day = daysOfWeek[index];
-        List<calendar.Event> dayEvents = _events
-            .where((event) =>
-                event.start?.dateTime?.day == day.day &&
-                event.start?.dateTime?.month == day.month &&
-                event.start?.dateTime?.year == day.year)
-            .toList();
-
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          elevation: 4,
-          color: dayEvents.isEmpty ? Colors.white : Colors.blue[100],
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${day.day}/${day.month}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                ...dayEvents.map((event) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      event.summary ?? 'Sin título',
-                      style: TextStyle(color: Colors.black87),
+      appBar: AppBar(title: Text('Calendario de Disponibilidad')),
+      body: Column(
+        children: [
+          TableCalendar(
+            firstDay: DateTime.utc(2023, 1, 1),
+            lastDay: DateTime.utc(2025, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            calendarFormat: CalendarFormat.month,
+            availableCalendarFormats: const {
+              CalendarFormat.month: 'Month',
+            },
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+            ),
+            calendarBuilders: CalendarBuilders(
+              defaultBuilder: (context, day, focusedDay) {
+                // Marcar en rojo los días reservados
+                if (_isDateReserved(day)) {
+                  return Container(
+                    margin: const EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent, // Rojo para días reservados
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   );
-                }).toList(),
-              ],
+                }
+                return null;
+              },
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
-  }
-
-  String _formatEventDate(calendar.Event event) {
-    final start = event.start?.dateTime;
-    if (start == null) return 'Fecha no disponible';
-    return '${start.day}/${start.month}/${start.year} ${start.hour}:${start.minute}';
   }
 }

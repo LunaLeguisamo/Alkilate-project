@@ -15,5 +15,5 @@ var appRoutes = {
   '/product-search': (context) => ProductSearchScreen(),
   '/profile': (context) => ProfileScreen(),
   '/user-orders': (context) => UserOrdersScreen(),
-  '/calendar': (context) => CalendarEventsWidget(),
+  '/calendar': (context) => CalendarAvailabilityWidget(),
 };
