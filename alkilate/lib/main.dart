@@ -3,9 +3,6 @@ import 'package:alkilate/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'firebase_options.dart';
-import 'package:firebase_vertexai/firebase_vertexai.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 // Initialize FirebaseApp
 await Firebase.initializeApp(

@@ -1,31 +1,58 @@
-from google import genai
-import 'package:firebase_vertexai/firebase_vertexai.dart';
-import 'package:firebase_core/firebase_core.dart';
+from flask import Flask, request, jsonify
 import vertexai
+from vertexai.language_models import TextGenerationModel
+from google.oauth2 import service_account
+from google.cloud import firestore
+import firebase_admin
+from firebase_admin import credentials
 
+cred = credentials.Certificate("path/to/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+db = firestore.Client(credentials=cred, project="Alkilate-Project")
+
+# Inicializar Vertex AI
 vertexai.init(
-        project=Alkaid-Project,
-        location=Montevideo, Uruguay,
-        experiment=experiment,
-        staging_bucket=staging_bucket,
-        credentials=credentials,
-        encryption_spec_key_name=encryption_spec_key_name,
-        service_account=service_account,
-    )
-
-client = genai.Client(api_key="AIzaSyDDXqEw67La5mkxK-Yy53q0nUhJIunZwow")
-response = client.models.generate_content(
-    model="gemini-2.0-flash", contents="Explain how AI works"
+    project="Alkilate-Project",
+    location="us-central1",
+    credentials=cred,
 )
-print(response.text)
 
+# Función para obtener productos de Firestore
+def get_products():
+    productos_ref = db.collection("Products").stream()
+    productos = [{"nombre": p.get("nombre"), "descripcion": p.get("descripcion")} for p in productos_ref]
+    return productos
 
-await Firebase.initializeApp();
-// Initialize the Vertex AI service and the generative model.
-final model =
-      FirebaseVertexAI.instance.generativeModel(
-        model: 'gemini-2.0-flash',
-        // In the generation config, set the `responseMimeType` to `application/json`
-        // and pass the JSON schema object into `responseSchema`.
-        generationConfig: GenerationConfig(
-            responseMimeType: 'application/json', responseSchema: jsonSchema));
+# Función para generar sugerencias con Gemini
+def suggest_products(user_query):
+    products = get_products()
+    product_texts = "\n".join([f"{p['nombre']}: {p['descripcion']}" for p in products])
+
+    prompt = f"""
+    Tenemos estos productos disponibles:
+    {product_texts}
+
+    Basado en estos productos, sugiere los más relevantes para la consulta: "{user_query}"
+    """
+
+    model = TextGenerationModel.from_pretrained("gemini-2.0-flash")
+    response = model.predict(prompt)
+
+    return response.text.split("\n")  # Convertir a lista
+
+# Crear API con Flask
+app = Flask(__name__)
+
+@app.route("/sugerencias", methods=["POST"])
+def get_suggestions():
+    data = request.json
+    user_query = data.get("consulta", "")
+
+    if not user_query:
+        return jsonify({"error": "Falta la consulta"}), 400
+
+    suggestions = suggest_products(user_query)
+    return jsonify({"sugerencias": suggestions})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
