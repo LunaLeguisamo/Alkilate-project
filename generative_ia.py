@@ -13,7 +13,7 @@ db = firestore.Client(credentials=cred, project="Alkilate-Project")
 # Inicializar Vertex AI
 vertexai.init(
     project="Alkilate-Project",
-    location="us-central1",
+    location="southamerica-east1",
     credentials=cred,
 )
 
@@ -55,4 +55,4 @@ def get_suggestions():
     return jsonify({"sugerencias": suggestions})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="10.0.2.2", port=5000, debug=True)
