@@ -1,4 +1,4 @@
-import 'package:alkilate/services/models.dart';
+import 'package:alkilate/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -15,6 +15,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class ProductDetailScreenState extends State<ProductDetailScreen> {
   final PageController _pageController = PageController();
+  final _commentTextController = TextEditingController();
   double rating = 3.0;
 
   @override
@@ -44,7 +45,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Carrusel de imágenes
+            // Image carousel
             SizedBox(
               height: 350,
               child: PageView.builder(
@@ -65,7 +66,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
 
-            // Indicador de página
+            // Page indicator
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: SmoothPageIndicator(
@@ -79,7 +80,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
 
-            // Contenido del producto
+            // Product content
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -124,10 +125,10 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         },
                       ),
                       Spacer(),
-                      // Botón
+                      // Button
                       ElevatedButton.icon(
                         onPressed: () {
-                          print('Botón');
+                          print('Button');
                         },
                         icon: Icon(
                           Icons.calendar_month,
@@ -158,7 +159,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
 
-                  // Sección de características principales
+                  // Main features section
                   SizedBox(height: 30),
                   Text('Main Features:',
                       style:
@@ -191,26 +192,38 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                           text:
                               'Easy storage: Folds up easily to save space when not in use.',
                           icon: Icons.storage),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OrderScreen(product: widget.product),
+                      Row(
+                        children: [
+                          // Rent button
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OrderScreen(product: widget.product),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12.0, horizontal: 24.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 24.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
                             ),
+                            child: Text('Rent'),
                           ),
-                          child: Text('Rent'),
-                        ),
+                          // Add comment button
+                          ElevatedButton(
+                            onPressed: () {
+                              showCommentDialog();
+                            },
+                            child: Text('Add Comment'),
+                          ),
+                        ],
                       ),
+                      // Comments section
+                      CommentsSection(productId: widget.product.id),
                     ],
                   ),
                 ],
@@ -221,9 +234,92 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
       ),
     );
   }
+
+  // Show a text input to add a comment
+  void showCommentDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Add Comment'),
+        content: TextField(
+          controller: _commentTextController,
+          decoration: InputDecoration(hintText: 'write a comment..'),
+        ),
+        actions: [
+          // Save
+          TextButton(
+            onPressed: () {
+              addComment(_commentTextController.text);
+              Navigator.pop(context);
+              _commentTextController.clear();
+            },
+            child: Text('Save'),
+          ),
+
+          // Cancel
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _commentTextController.clear();
+            },
+            child: Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addComment(String text) {
+    Comment comment = Comment(
+      dateCreated: DateTime.now(),
+      product: widget.product.id,
+      text: text,
+      user: AuthService().user?.uid ?? '',
+    );
+    FirestoreService().addCommentToProduct(comment);
+  }
 }
 
-// Widget para mostrar cada característica
+class CommentsSection extends StatelessWidget {
+  final String productId; // Pass the product ID to fetch comments
+
+  const CommentsSection({required this.productId, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Comment>>(
+      future: FirestoreService().getCommentsForProduct(productId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator()); // Show a loader
+        } else if (snapshot.hasError) {
+          return Center(
+              child: Text('Error loading comments')); // Show error message
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No comments yet')); // Show empty state
+        } else {
+          return SizedBox(
+            height: 200, // Set a fixed height
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), // Disable scrolling
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final Comment comment = snapshot.data![index];
+                return ListTile(
+                  title: Text(comment.text),
+                  subtitle: Text(comment.dateCreated.toString()),
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+// Widget to display each feature
 class FeatureItem extends StatelessWidget {
   final String text;
   final IconData icon;
@@ -232,9 +328,8 @@ class FeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        children: [
+        padding: const EdgeInsets.symmetric(vertical: 6.0),
+        child: Row(children: [
           Icon(icon, color: Colors.black, size: 22),
           SizedBox(width: 10),
           Expanded(
@@ -243,8 +338,6 @@ class FeatureItem extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
           ),
-        ],
-      ),
-    );
+        ]));
   }
 }

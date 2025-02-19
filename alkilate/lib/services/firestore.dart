@@ -144,6 +144,29 @@ class FirestoreService {
     return app_models.User.fromJson(snapshot.data() ?? {});
   }
 
+  /// add a comment to a product
+  Future<void> addCommentToProduct(app_models.Comment comment) async {
+    var ref = _db
+        .collection('products')
+        .doc(comment.product)
+        .collection('comments')
+        .doc(comment.id);
+    await ref.set(comment.toJson());
+    return;
+  }
+
+  /// get comments for a product
+  Future<List<app_models.Comment>> getCommentsForProduct(
+      String productId) async {
+    var ref = _db.collection('products').doc(productId).collection('comments');
+
+    var snapshot = await ref.get();
+    print(snapshot.docs);
+    return snapshot.docs
+        .map((doc) => app_models.Comment.fromJson(doc.data()))
+        .toList();
+  }
+
   /// Checks if a user document exists in Firestore, and creates one if it doesn't
   Future<void> checkAndCreateUserDocument(String uid) async {
     var userRef = _db.collection('Users').doc(uid);
