@@ -159,73 +159,45 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
 
-                  // Main features section
+                  // Comments and rent buttons
+
                   SizedBox(height: 30),
-                  Text('Main Features:',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FeatureItem(
-                          text:
-                              'Adjustable speed: Change the speed to match your fitness level.',
-                          icon: Icons.speed),
-                      FeatureItem(
-                          text:
-                              'Adjustable incline: Increase workout intensity by choosing different incline levels.',
-                          icon: Icons.arrow_upward),
-                      FeatureItem(
-                          text:
-                              'Digital display: Shows data like speed, distance, time, and calories burned to track your progress.',
-                          icon: Icons.screen_search_desktop),
-                      FeatureItem(
-                          text:
-                              'Cushioning system: Reduces joint impact, providing a more comfortable running experience.',
-                          icon: Icons.hotel),
-                      FeatureItem(
-                          text:
-                              'Sturdy construction: Made with durable materials, perfect for regular use.',
-                          icon: Icons.build),
-                      FeatureItem(
-                          text:
-                              'Easy storage: Folds up easily to save space when not in use.',
-                          icon: Icons.storage),
-                      Row(
-                        children: [
-                          // Rent button
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      OrderScreen(product: widget.product),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 24.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
+                      // Rent button
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  OrderScreen(product: widget.product),
                             ),
-                            child: Text('Rent'),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 24.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                          // Add comment button
-                          ElevatedButton(
-                            onPressed: () {
-                              showCommentDialog();
-                            },
-                            child: Text('Add Comment'),
-                          ),
-                        ],
+                        ),
+                        child: Text('Rent'),
                       ),
-                      // Comments section
-                      CommentsSection(productId: widget.product.id),
+                      SizedBox(height: 20),
+                      // Add comment button
+                      ElevatedButton(
+                        onPressed: () {
+                          showCommentDialog();
+                        },
+                        child: Text('Add Comment'),
+                      ),
                     ],
                   ),
+                  SizedBox(height: 20),
+                  // Comments section
+                  CommentsSection(productId: widget.product.id),
+                  SizedBox(height: 60),
                 ],
               ),
             ),
