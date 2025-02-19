@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:alkilate/services/models.dart' as app_models;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -20,11 +20,11 @@ class FirestoreService {
     return app_models.User.fromJson(snapshot.data() ?? {});
   }
 
-  /// Retrieves a list of order documents
+  /// Retrieves a list of order documents for a user
   Future<List<app_models.Order>> getOrderList() {
     var ref = _db
         .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
         .collection('orders');
     return ref.get().then((snapshot) {
       return snapshot.docs
@@ -33,14 +33,34 @@ class FirestoreService {
     });
   }
 
-  /// Retrieves a list of product documents
-  Future<List<app_models.Product>> getProductList() {
-    var ref = _db.collection('products');
+  /// Retrieves a list of product documents for a user
+  Future<List<app_models.Product>> getUserProductsList() {
+    var ref = _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .collection('products');
     return ref.get().then((snapshot) {
       return snapshot.docs
           .map((doc) => app_models.Product.fromJson(doc.data()))
           .toList();
     });
+  }
+
+  Future<List<app_models.Product>> getProductList() async {
+    var ref = _db.collection('products');
+
+    // Fetch the documents from the collection
+    var snapshot = await ref.get();
+
+    // Filter documents where 'approved' is true
+    var approvedProducts = snapshot.docs
+        .where((doc) =>
+            doc.data()['approved'] == true) // Filter by 'approved' field
+        .map((doc) =>
+            app_models.Product.fromJson(doc.data())) // Map to Product model
+        .toList(); // Convert to List
+
+    return approvedProducts;
   }
 
   /// Posts a product document to the product db
@@ -50,12 +70,35 @@ class FirestoreService {
     return;
   }
 
+  /// Add a product document to the user's products db
+  Future<void> addProductToUser(app_models.Product product) async {
+    var ref = _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .collection('products')
+        .doc(product.id);
+    await ref.set(product.toJson());
+    return;
+  }
+
   /// Adds an order document to the user's orders db
   Future<void> addOrderToUser(app_models.Order order) async {
     var ref = _db
         .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
         .collection('orders')
+        .doc(order.id);
+    await ref.set(order.toJson());
+    return;
+  }
+
+  /// Adds an order document to the seller db
+  Future<void> addOrderToSeller(app_models.Order order) async {
+    print(order.seller);
+    var ref = _db
+        .collection('Users')
+        .doc(order.seller)
+        .collection('listings')
         .doc(order.id);
     await ref.set(order.toJson());
     return;
@@ -65,7 +108,7 @@ class FirestoreService {
   Future<void> cancelOrder(String orderId) async {
     var ref = _db
         .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
         .collection('orders')
         .doc(orderId);
     await ref.delete();
@@ -84,7 +127,7 @@ class FirestoreService {
   /// Retrieves the current logged-in user's data from Firestore
   Future<app_models.User> getCurrentUser() async {
     // Get the current user from Firebase Auth
-    User? firebaseUser = FirebaseAuth.instance.currentUser;
+    auth.User? firebaseUser = auth.FirebaseAuth.instance.currentUser;
 
     if (firebaseUser == null) {
       throw Exception('No user is currently logged in.');
@@ -105,7 +148,7 @@ class FirestoreService {
   Future<void> checkAndCreateUserDocument(String uid) async {
     var userRef = _db.collection('Users').doc(uid);
     var snapshot = await userRef.get();
-    User? firebaseUser = FirebaseAuth.instance.currentUser;
+    auth.User? firebaseUser = auth.FirebaseAuth.instance.currentUser;
 
     if (!snapshot.exists) {
       // Create a new user document with default data

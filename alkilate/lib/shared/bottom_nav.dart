@@ -27,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         Navigator.pushNamed(context, '/add-product');
         break;
       case 3:
-        Navigator.pushNamed(context, '/orders');
+        Navigator.pushNamed(context, '/user-orders');
         break;
       case 4:
         Navigator.pushNamed(context, '/profile');

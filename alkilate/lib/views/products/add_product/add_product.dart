@@ -115,6 +115,7 @@ class AddProductScreen extends StatelessWidget {
                 );
 
                 try {
+                  await FirestoreService().addProductToUser(product);
                   await FirestoreService().postProduct(product);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Product added successfully')),

@@ -155,8 +155,8 @@ class ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildIconButton('assets/images/image3.png', 'My Listing', ''),
-                _buildIconButton('assets/images/image2.png', 'Pending', ''),
+                _buildIconButton(
+                    'assets/images/image3.png', 'My Listing', '/user-products'),
                 _buildIconButton(
                     'assets/images/image3.png', 'My orders', '/user-orders'),
               ],

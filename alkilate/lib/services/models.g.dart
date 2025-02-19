@@ -63,6 +63,8 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       availability: json['availability'] as bool? ?? false,
       deposit: (json['deposit'] as num?)?.toDouble() ?? 0.0,
       approved: json['approved'] as bool? ?? false,
+      rejected: json['rejected'] as bool? ?? false,
+      message: json['message'] as String? ?? '',
       comments: (json['comments'] as List<dynamic>?)
               ?.map((e) => e as Map<String, dynamic>)
               .toList() ??
@@ -89,6 +91,8 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'availability': instance.availability,
       'deposit': instance.deposit,
       'approved': instance.approved,
+      'rejected': instance.rejected,
+      'message': instance.message,
       'comments': instance.comments,
       'pictures': instance.pictures,
       'bankAccount': instance.bankAccount,

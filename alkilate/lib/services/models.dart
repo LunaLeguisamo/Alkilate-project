@@ -52,6 +52,8 @@ class Product {
   final bool availability;
   final double deposit;
   final bool approved;
+  final bool rejected;
+  final String message;
   final List<Map<String, dynamic>> comments;
   final List<String> pictures;
   final String bankAccount;
@@ -69,6 +71,8 @@ class Product {
     this.availability = false,
     this.deposit = 0.0,
     this.approved = false,
+    this.rejected = false,
+    this.message = '',
     this.comments = const [],
     this.pictures = const [
       'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'

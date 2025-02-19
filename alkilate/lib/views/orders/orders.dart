@@ -56,7 +56,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 );
                 // Make an HTTP request to a specific URL
                 final response = await http.post(
-                  Uri.parse('https://app-p7vfglazhq-uc.a.run.app/checkout'),
+                  Uri.parse(
+                      'https://de67-167-57-39-74.ngrok-free.app/alkilate-a4fbc/us-central1/app/checkout'),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },
@@ -64,6 +65,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     'item': widget.product.name,
                     'price': widget.product.price,
                     'id': order.id,
+                    'seller': order.seller,
+                    'user': order.buyer,
                   }),
                 );
                 if (response.statusCode == 200) {
@@ -74,10 +77,11 @@ class _OrderScreenState extends State<OrderScreen> {
                   // If the server did not return a 200 OK response, throw an exception
                   throw Exception('Failed to create order');
                 }
-                // ignore: use_build_context_synchronously
-                launchURL(context, jsonDecode(response.body));
                 FirestoreService().addOrder(order);
                 FirestoreService().addOrderToUser(order);
+                FirestoreService().addOrderToSeller(order);
+                // ignore: use_build_context_synchronously
+                launchURL(context, jsonDecode(response.body));
               },
               child: Text('Add Order'),
             ),
