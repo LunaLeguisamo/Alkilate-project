@@ -25,7 +25,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       stream: AuthService().userStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('loading');
+          return const LoadingScreen();
         } else if (snapshot.hasError) {
           return const Center(
             child: Text('error'),
