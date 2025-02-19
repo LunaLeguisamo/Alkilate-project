@@ -43,7 +43,7 @@ def suggest_products(user_query):
 # Crear API con Flask
 app = Flask(__name__)
 
-@app.route("/sugerencias", methods=["POST"])
+@app.route("/api/ia", methods=["POST"])
 def get_suggestions():
     data = request.json
     user_query = data.get("consulta", "")

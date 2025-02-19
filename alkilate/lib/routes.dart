@@ -1,3 +1,4 @@
+import 'package:alkilate/services/api_service.dart';
 import 'package:alkilate/views/home/home.dart';
 import 'package:alkilate/views/login/login.dart';
 import 'package:alkilate/views/orders/orders.dart';
@@ -14,4 +15,5 @@ var appRoutes = {
   '/product-filter': (context) => ProductFilterScreen(),
   '/product-search': (context) => ProductSearchScreen(),
   '/profile': (context) => ProfileScreen(),
+  '/product-suggestion': (context) => ProductSuggestionPage(),
 };
