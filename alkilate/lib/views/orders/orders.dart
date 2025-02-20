@@ -56,8 +56,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 );
                 // Make an HTTP request to a specific URL
                 final response = await http.post(
-                  Uri.parse(
-                      'https://de67-167-57-39-74.ngrok-free.app/alkilate-a4fbc/us-central1/app/checkout'),
+                  Uri.parse('https://app-p7vfglazhq-uc.a.run.app/checkout'),
                   headers: <String, String>{
                     'Content-Type': 'application/json; charset=UTF-8',
                   },

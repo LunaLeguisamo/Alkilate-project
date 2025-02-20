@@ -105,47 +105,6 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/login'),
-                    child: const Text('Login'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/orders'),
-                    child: const Text('Orders'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/product-detail'),
-                    child: const Text('Product Detail'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/product-filter'),
-                    child: const Text('Product Filter'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/product-search'),
-                    child: const Text('Product Search'),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/profile'),
-                    child: const Text('Profile'),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
