@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:alkilate/shared/shared.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -45,13 +46,18 @@ class HomeScreen extends StatelessWidget {
                   width: double.maxFinite,
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: SearchBar(
-                    leading: const Icon(Icons.search),
+                    leading: SvgPicture.asset(
+                      'assets/svg/search.svg',
+                      width: 14.4,
+                      height: 14.4,
+                    ),
                     trailing: <Widget>[
                       Tooltip(
                         message: 'Filter',
-                        child: Icon(
-                          Icons.filter_list_outlined,
-                          color: Color(0xFF1B1B1B),
+                        child: SvgPicture.asset(
+                          'assets/svg/filters.svg',
+                          width: 20,
+                          height: 19,
                         ),
                       )
                     ],

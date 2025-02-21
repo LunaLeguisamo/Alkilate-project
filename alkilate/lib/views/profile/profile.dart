@@ -57,18 +57,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Widget profileBuilder(user) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 137, 191, 235),
-        title: Text('Profile'),
-        toolbarTextStyle: TextStyle(color: Colors.white),
-        actions: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(user.photoURL), // Foto de perfil
-            radius: 20,
-          ),
-          SizedBox(width: 10),
-        ],
-      ),
+      bottomNavigationBar: BottomNavBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

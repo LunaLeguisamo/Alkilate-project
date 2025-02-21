@@ -1,3 +1,4 @@
+import 'package:alkilate/shared/shared.dart';
 import 'package:alkilate/views/products/product_detail/product_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/services.dart';
@@ -11,6 +12,7 @@ class ProductSearchScreen extends StatefulWidget {
 
 class ProductSearchScreenState extends State<ProductSearchScreen> {
   bool showFilters = false;
+  bool isLoading = true; // Track loading state
   TextEditingController searchController = TextEditingController();
 
   String? category;
@@ -32,19 +34,23 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
       List<Product> products = await fetchedProducts();
       setState(() {
         this.products = products;
+        isLoading = false; // Set loading to false after data is fetched
       });
     } catch (e) {
       print(e);
+      setState(() {
+        isLoading = false; // Set loading to false even if there's an error
+      });
     }
   }
 
-  // Lista de productos con imágenes locales
+  // Fetch products from Firestore
   fetchedProducts() async {
     dynamic products = await FirestoreService().getProductList();
     return products;
   }
 
-  // Opciones de filtros
+  // Filter options
   List<String> categories = [
     'Category',
     'Electronics',
@@ -59,10 +65,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Product Search', style: TextStyle(color: Colors.white)),
-      ),
+      bottomNavigationBar: BottomNavBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -89,7 +92,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                     ),
                   ),
                   SizedBox(width: 8),
-                  // Botón de filtrado al lado de la barra de búsqueda
+                  // Filter button next to the search bar
                   IconButton(
                     icon: Icon(Icons.filter_list, color: Colors.black),
                     onPressed: () {
@@ -100,70 +103,79 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
               ),
             ),
 
-            // Lista de productos
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1,
-                ),
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              ProductDetailScreen(product: products[index]),
-                        ),
-                      );
-                    },
-                    child: Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+            // Display loading spinner or product grid
+            isLoading
+                ? Column(
+                    children: [
+                      SizedBox(height: 150),
+                      Loader(),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 1,
                       ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            child: Image.network(
-                              products[index].pictures[0],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            right: 10,
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              // ignore: deprecated_member_use
-                              color: Colors.black.withOpacity(0.6),
-                              child: Text(
-                                products[index].name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                overflow: TextOverflow.ellipsis,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ProductDetailScreen(
+                                        product: products[index]),
                               ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
+                                  child: Image.network(
+                                    products[index].pictures[0],
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  right: 10,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    // ignore: deprecated_member_use
+                                    color: Colors.black.withOpacity(0.6),
+                                    child: Text(
+                                      products[index].name,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
           ],
         ),
       ),
@@ -230,7 +242,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
               ),
               SizedBox(height: 16),
 
-              // Filtro por fecha
+              // Date filter
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,

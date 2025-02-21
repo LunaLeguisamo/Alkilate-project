@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -15,7 +16,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       _currentIndex = index;
     });
-
+    print('Tapped index: $index'); // Debugging
     switch (index) {
       case 0:
         Navigator.pushNamed(context, '/');
@@ -32,6 +33,32 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 4:
         Navigator.pushNamed(context, '/profile');
         break;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update _currentIndex based on the current route
+    final route = ModalRoute.of(context)?.settings.name;
+    switch (route) {
+      case '/':
+        _currentIndex = 0;
+        break;
+      case '/product-search':
+        _currentIndex = 1;
+        break;
+      case '/add-product':
+        _currentIndex = 2;
+        break;
+      case '/user-orders':
+        _currentIndex = 3;
+        break;
+      case '/profile':
+        _currentIndex = 4;
+        break;
+      default:
+        _currentIndex = 0; // Default to Home
     }
   }
 
@@ -56,34 +83,65 @@ class _BottomNavBarState extends State<BottomNavBar> {
           currentIndex: _currentIndex,
           onTap: _onItemTapped,
           unselectedItemColor: const Color(0xFFB5B5B5),
-          selectedItemColor: const Color(0xFF87AAE4),
           showSelectedLabels: false,
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.house, size: 20),
-              activeIcon: Icon(FontAwesomeIcons.house, size: 24),
+              icon: SvgPicture.asset(
+                'assets/svg/home.svg',
+                width: 35,
+                height: 35,
+              ),
+              activeIcon: SvgPicture.asset(
+                'assets/svg/home_active.svg',
+                width: 35,
+                height: 35,
+              ),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.magnifyingGlass, size: 20),
-              activeIcon: Icon(FontAwesomeIcons.magnifyingGlass, size: 24),
+              icon: SvgPicture.asset(
+                'assets/svg/lupa.svg',
+                width: 31.8,
+                height: 32.7,
+              ),
+              activeIcon: SvgPicture.asset(
+                'assets/svg/lupa_active.svg',
+                width: 31.8,
+                height: 32.7,
+              ),
               label: 'Search',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.plus, size: 20),
-              activeIcon: Icon(FontAwesomeIcons.plus, size: 24),
+              icon: Icon(FontAwesomeIcons.plus, size: 35),
+              activeIcon: Icon(FontAwesomeIcons.plus, size: 35),
               label: 'Add',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.bagShopping, size: 20),
-              activeIcon: Icon(FontAwesomeIcons.bagShopping, size: 24),
+              icon: SvgPicture.asset(
+                'assets/svg/shopping_bag.svg',
+                width: 36.2,
+                height: 34.6,
+              ),
+              activeIcon: SvgPicture.asset(
+                'assets/svg/shopping_bag.svg',
+                width: 36.2,
+                height: 34.6,
+              ),
               label: 'Orders',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.user, size: 20),
-              activeIcon: Icon(FontAwesomeIcons.user, size: 24),
+              icon: SvgPicture.asset(
+                'assets/svg/user.svg',
+                width: 31.7,
+                height: 34.6,
+              ),
+              activeIcon: SvgPicture.asset(
+                'assets/svg/user_active.svg',
+                width: 31.7,
+                height: 34.6,
+              ),
               label: 'Profile',
             ),
           ],
