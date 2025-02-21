@@ -33,7 +33,7 @@ class UserOrdersScreenState extends State<UserOrdersScreen> {
   Widget listBuilder(List<Order> orders) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis pedidos'),
+        title: const Text('My orders'),
       ),
       body: ListView.builder(
         itemCount: orders.length,
