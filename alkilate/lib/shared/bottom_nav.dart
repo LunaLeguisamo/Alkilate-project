@@ -16,7 +16,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       _currentIndex = index;
     });
-    print('Tapped index: $index'); // Debugging
     switch (index) {
       case 0:
         Navigator.pushNamed(context, '/');
@@ -33,32 +32,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 4:
         Navigator.pushNamed(context, '/profile');
         break;
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Update _currentIndex based on the current route
-    final route = ModalRoute.of(context)?.settings.name;
-    switch (route) {
-      case '/':
-        _currentIndex = 0;
-        break;
-      case '/product-search':
-        _currentIndex = 1;
-        break;
-      case '/add-product':
-        _currentIndex = 2;
-        break;
-      case '/user-orders':
-        _currentIndex = 3;
-        break;
-      case '/profile':
-        _currentIndex = 4;
-        break;
-      default:
-        _currentIndex = 0; // Default to Home
     }
   }
 
@@ -114,7 +87,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: 'Search',
             ),
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.plus, size: 35),
+              icon: Icon(FontAwesomeIcons.plus, size: 40),
               activeIcon: Icon(FontAwesomeIcons.plus, size: 35),
               label: 'Add',
             ),
