@@ -2,6 +2,7 @@ import 'package:alkilate/shared/shared.dart';
 import 'package:alkilate/views/products/product_detail/product_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   const ProductSearchScreen({super.key});
@@ -69,40 +70,45 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Search products',
-                        labelStyle: TextStyle(color: Colors.black),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.black12),
-                        ),
-                        prefixIcon: Icon(Icons.search, color: Colors.black),
+            SizedBox(
+              height: 45,
+            ),
+            Container(
+              height: 30,
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: SearchBar(
+                leading: SvgPicture.asset(
+                  'assets/svg/search.svg',
+                  width: 14.4,
+                  height: 14.4,
+                ),
+                trailing: <Widget>[
+                  GestureDetector(
+                    onTap: _showFilterDialog,
+                    child: Tooltip(
+                      message: 'Filter',
+                      child: SvgPicture.asset(
+                        'assets/svg/filters.svg',
+                        width: 20,
+                        height: 19,
                       ),
                     ),
-                  ),
-                  SizedBox(width: 8),
-                  // Filter button next to the search bar
-                  IconButton(
-                    icon: Icon(Icons.filter_list, color: Colors.black),
-                    onPressed: () {
-                      _showFilterDialog();
-                    },
-                  ),
+                  )
                 ],
+                hintText: 'Search',
+                hintStyle: WidgetStateProperty.all(
+                    TextStyle(color: Color(0xFF808080))),
+                backgroundColor: WidgetStateProperty.all(Colors.white),
+                shadowColor: WidgetStateProperty.all(Color(0xFF808080)),
+                elevation: WidgetStateProperty.all(1),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
               ),
             ),
-
             // Display loading spinner or product grid
             isLoading
                 ? Column(
@@ -112,7 +118,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                     ],
                   )
                 : Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(26.0),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
