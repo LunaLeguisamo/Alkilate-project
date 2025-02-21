@@ -118,14 +118,14 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                     ],
                   )
                 : Padding(
-                    padding: const EdgeInsets.all(26.0),
+                    padding: const EdgeInsets.all(24.0),
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
                         childAspectRatio: 1,
                       ),
                       itemCount: products.length,
@@ -148,6 +148,7 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
+                                // Image
                                 ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15)),
@@ -156,23 +157,59 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
+
+                                // Gradient overlay
                                 Positioned(
-                                  bottom: 10,
-                                  left: 10,
-                                  right: 10,
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
                                   child: Container(
-                                    padding: EdgeInsets.all(8),
-                                    // ignore: deprecated_member_use
-                                    color: Colors.black.withOpacity(0.6),
-                                    child: Text(
-                                      products[index].name,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                    height: 60, // 1/3 of the card height
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(15),
                                       ),
-                                      overflow: TextOverflow.ellipsis,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Color(0x99000000),
+                                          Colors
+                                              .transparent, // Transparent at the top
+                                        ],
+                                      ),
                                     ),
+                                  ),
+                                ),
+
+                                // Text overlay
+                                Positioned(
+                                  bottom: 8.5,
+                                  left: 12.5,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        products[index].name,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        '\$${products[index].price} / Day',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.white,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
