@@ -15,14 +15,14 @@ else:
 
 def suggestions(products, query, top_n=2):
     # Crear una lista de descripciones combinando nombre y categoría
-    descripciones = [f"{product['name']} {product['category']}" for product in products]
+    query_s = [f"{product['name']} {product['category']} {product['description']}" for product in products]
     
     # Añadir la consulta del usuario a las descripciones
-    descripciones.append(query)
+    query_s.append(query)
     
     # Vectorizar las descripciones utilizando TF-IDF
     vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(descripciones)
+    tfidf_matrix = vectorizer.fit_transform(query_s)
     
     # Calcular la similitud de coseno entre la consulta y las descripciones
     similitudes = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1]).flatten()
