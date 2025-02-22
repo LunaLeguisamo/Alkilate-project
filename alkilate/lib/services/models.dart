@@ -45,11 +45,13 @@ class Product {
   final DateTime modifiedDate;
   final String owner;
   final String name;
+  final String description;
   final String brand;
   final String category;
   final String location;
   final double price;
   final bool availability;
+  final double rating;
   final double deposit;
   final bool approved;
   final bool rejected;
@@ -64,12 +66,14 @@ class Product {
     DateTime? modifiedDate,
     this.owner = '',
     this.name = '',
+    this.description = '',
     this.brand = '',
     this.category = '',
     this.location = '',
     this.price = 0.0,
     this.availability = false,
     this.deposit = 0.0,
+    this.rating = 5.0,
     this.approved = false,
     this.rejected = false,
     this.message = '',

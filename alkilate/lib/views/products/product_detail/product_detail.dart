@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:alkilate/views/orders/orders.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -38,8 +39,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         title: Text('Product Detail', style: TextStyle(fontSize: 24)),
       ),
       body: SingleChildScrollView(
@@ -47,21 +48,18 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
           children: [
             // Image carousel
             SizedBox(
-              height: 350,
+              height: 351,
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: images.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Image.network(
-                        images[index],
-                        fit: BoxFit.cover,
-                      ),
+                  ClipRRect(
+                    child: Image.network(
+                      images[index],
+                      fit: BoxFit.cover,
                     ),
                   );
+                  return null;
                 },
               ),
             ),
@@ -82,38 +80,41 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 
             // Product content
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     widget.product.name,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
-                    '\$${widget.product.price}',
+                    '\$${widget.product.price} / Hour',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w400,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 11),
                   // Rating bar
                   Row(
                     children: [
+                      Text('${widget.product.rating} '),
                       RatingBar.builder(
-                        initialRating: rating,
+                        initialRating: widget.product.rating,
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
                         itemCount: 5,
-                        itemSize: 28.0,
+                        itemSize: 21.0,
                         itemBuilder: (context, index) => Icon(
                           Icons.star,
                           color: Colors.black,
@@ -130,33 +131,43 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         onPressed: () {
                           print('Button');
                         },
-                        icon: Icon(
-                          Icons.calendar_month,
-                          color: Colors.white,
+                        icon: SvgPicture.asset(
+                          'assets/svg/calendar.svg',
+                          width: 14.2,
+                          height: 14.7,
                         ),
                         label: Text(
                           'See availability',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           padding: EdgeInsets.symmetric(
-                              vertical: 12.0, horizontal: 16.0),
+                              vertical: 0, horizontal: 13.6),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(55),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 26),
                   Text('Description:',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
+                          color: Color(0xFF1B1B1B))),
+                  SizedBox(height: 11.8),
                   Text(
-                    widget.product.brand,
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    widget.product.description,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w200,
+                        color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
 
                   // Comments and rent buttons

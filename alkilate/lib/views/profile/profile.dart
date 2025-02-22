@@ -27,8 +27,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingScreen();
         } else if (snapshot.hasError) {
-          return const Center(
-            child: Text('error'),
+          return Center(
+            child: ErrorMessage(
+                message: 'Failed to load user data: ${snapshot.error}'),
           );
         } else if (snapshot.hasData) {
           return FutureBuilder<User>(
@@ -58,42 +59,67 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget profileBuilder(user) {
     return Scaffold(
       bottomNavigationBar: BottomNavBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Fila con la foto de perfil a la izquierda y el nombre centrado
-            Row(
-              children: [
-                // Foto de perfil a la izquierda
-                CircleAvatar(
-                  radius: 50,
+            Stack(children: [
+              Hero(
+                tag: 'profile',
+                child: Image.asset(
+                  'assets/images/profile-banner.png',
+                  height: 126,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(31.5, 71, 0, 0),
+                child: CircleAvatar(
+                  radius: 48.5,
                   backgroundImage:
                       NetworkImage(user.photoURL), // Foto de perfil
                 ),
-                SizedBox(width: 20),
-
-                // Nombre centrado
-                Expanded(
-                  child: Text(
-                    'Welcome to ALkilate! ${user.name}',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+              ),
+            ]),
+            Padding(
+              padding: const EdgeInsets.all(31.5),
+              child: Column(
+                children: [
+                  Wrap(
+                    children: [
+                      Text(
+                        'Hello, ',
+                        style: TextStyle(
+                          fontSize: 39,
+                          color: Color(0xFF7F7F7F),
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      Text(
+                        '${user.name}',
+                        style: TextStyle(
+                          fontSize: 47,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: 10),
 
-            // Correo electrónico
-            Text(
-              user.email,
-              style: TextStyle(
-                  fontSize: 18, color: const Color.fromARGB(255, 37, 136, 216)),
-              textAlign: TextAlign.center,
+            // Tres botones con imágenes
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildIconButton('assets/images/My-listing.png', 'My Listing',
+                    '/user-products'),
+                _buildIconButton(
+                    'assets/images/My-orders.png', 'My orders', '/user-orders'),
+              ],
             ),
-            SizedBox(height: 30),
-
             // Botón "Actualizar Datos"
             ElevatedButton(
               onPressed: () {
@@ -139,17 +165,6 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
             SizedBox(height: 30),
-
-            // Tres botones con imágenes
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildIconButton(
-                    'assets/images/image3.png', 'My Listing', '/user-products'),
-                _buildIconButton(
-                    'assets/images/image3.png', 'My orders', '/user-orders'),
-              ],
-            ),
           ],
         ),
       ),
@@ -175,7 +190,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                imagePath, // Asegúrate de tener las imágenes en la carpeta assets
+                imagePath,
                 width: 50,
                 height: 50,
               ),
