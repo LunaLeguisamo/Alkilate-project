@@ -15,7 +15,7 @@ class ProductSuggestionPageState extends State<ProductSuggestionPage> {
 
   Future<void> getSuggestions(String query) async {
     final response = await http.post(
-      Uri.parse("http://localhost:3000/sugerencias"),
+      Uri.parse("http://10.0.2.2:3500/sugerencias"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"consulta": query}),
     );

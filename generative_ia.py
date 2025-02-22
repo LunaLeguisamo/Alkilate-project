@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from google.cloud import firestore
 import firebase_admin
 from firebase_admin import credentials
+from alkilate.lib.services.firestore.dart import getProduct
 
 cred = credentials.Certificate("path/to/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -37,22 +38,4 @@ def suggest_products(user_query):
 
     model = TextGenerationModel.from_pretrained("gemini-2.0-flash")
     response = model.predict(prompt)
-
     return response.text.split("\n")  # Convertir a lista
-
-# Crear API con Flask
-app = Flask(__name__)
-
-@app.route("/api/ia", methods=["POST"])
-def get_suggestions():
-    data = request.json
-    user_query = data.get("consulta", "")
-
-    if not user_query:
-        return jsonify({"error": "Falta la consulta"}), 400
-
-    suggestions = suggest_products(user_query)
-    return jsonify({"sugerencias": suggestions})
-
-if __name__ == "__main__":
-    app.run(host="10.0.2.2", port=5000, debug=True)
