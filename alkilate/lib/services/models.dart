@@ -7,10 +7,10 @@ class User {
   final String uid;
   final DateTime dateCreated;
   final DateTime modifiedDate;
-  final String name;
-  final String email;
-  final String password;
-  final String phoneNumber;
+  String name;
+  String email;
+  String password;
+  String phoneNumber;
   final String photoURL;
   final List<Comment> comments;
   final List<Product> products;

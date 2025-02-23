@@ -5,6 +5,7 @@ import 'package:alkilate/views/profile/profile.dart';
 import 'package:alkilate/views/products/add_product/add_product.dart';
 import 'package:alkilate/views/profile/user_orders.dart';
 import 'package:alkilate/views/profile/user_products.dart';
+import 'package:alkilate/views/profile/pending.dart';
 
 var appRoutes = {
   '/': (context) => HomeScreen(),
@@ -14,4 +15,5 @@ var appRoutes = {
   '/profile': (context) => ProfileScreen(),
   '/user-orders': (context) => UserOrdersScreen(),
   '/user-products': (context) => UserProductsScreen(),
+  '/pending': (context) => UserPendingScreen(),
 };

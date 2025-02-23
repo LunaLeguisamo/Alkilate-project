@@ -70,6 +70,14 @@ class FirestoreService {
     return;
   }
 
+  Future<void> updateUserData(app_models.User user) async {
+    var ref = _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid);
+    await ref.set(user.toJson());
+    return;
+  }
+
   /// Add a product document to the user's products db
   Future<void> addProductToUser(app_models.Product product) async {
     var ref = _db
@@ -104,6 +112,21 @@ class FirestoreService {
     return;
   }
 
+  Future<List<app_models.Order>> getListings() async {
+    var ref = _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .collection('listings');
+    var snapshot = await ref.get();
+    var orders = snapshot.docs
+        .where((doc) =>
+            doc.data()['status'] == 'approved') // Filter by 'approved' field
+        .map((doc) =>
+            app_models.Order.fromJson(doc.data())) // Map to Product model
+        .toList();
+    return orders;
+  }
+
   /// Cancel an order document
   Future<void> cancelOrder(String orderId) async {
     var ref = _db
@@ -114,6 +137,24 @@ class FirestoreService {
     await ref.delete();
     var ref2 = _db.collection('orders').doc(orderId);
     await ref2.delete();
+    return;
+  }
+
+  ///seller accepts order
+  Future<void> acceptOrder(String orderId, String buyerId) async {
+    await _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .collection('listings')
+        .doc(orderId)
+        .update({'status': 'accepted'});
+    await _db.collection('orders').doc(orderId).update({'status': 'accepted'});
+    await _db
+        .collection('Users')
+        .doc(buyerId)
+        .collection('orders')
+        .doc(orderId)
+        .update({'status': 'accepted'});
     return;
   }
 

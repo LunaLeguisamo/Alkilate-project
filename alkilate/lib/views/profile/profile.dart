@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:alkilate/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/services.dart';
@@ -11,14 +13,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  bool _isEditing = false; // Variable que indica si estamos en modo edición
-
-  // Controladores de los campos de texto para almacenar los valores ingresados
-  final TextEditingController _nameController =
-      TextEditingController(text: 'New name');
-  final TextEditingController _emailController =
-      TextEditingController(text: 'newmail@example.com');
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -43,7 +37,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 );
               } else if (snapshot.hasData) {
                 var user = snapshot.data!;
-                return profileBuilder(user);
+                return _buildProfile(user);
               } else {
                 return const Text('No user found in Firestore. Check database');
               }
@@ -56,34 +50,35 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget profileBuilder(user) {
+  Widget _buildProfile(User user) {
     return Scaffold(
       bottomNavigationBar: BottomNavBar(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Stack(children: [
-              Hero(
-                tag: 'profile',
-                child: Image.asset(
-                  'assets/images/profile-banner.png',
-                  height: 126,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+            Stack(
+              children: [
+                Hero(
+                  tag: 'profile',
+                  child: Image.asset(
+                    'assets/images/profile-banner.png',
+                    height: 126,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(31.5, 71, 0, 0),
-                child: CircleAvatar(
-                  radius: 48.5,
-                  backgroundImage:
-                      NetworkImage(user.photoURL), // Foto de perfil
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(31.5, 71, 0, 0),
+                  child: CircleAvatar(
+                    radius: 48.5,
+                    backgroundImage: NetworkImage(user.photoURL),
+                  ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             Padding(
-              padding: const EdgeInsets.all(31.5),
+              padding: const EdgeInsets.all(15),
               child: Column(
                 children: [
                   Wrap(
@@ -97,9 +92,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       Text(
-                        '${user.name}',
+                        user.name,
                         style: TextStyle(
-                          fontSize: 47,
+                          fontSize: 39,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -108,99 +103,143 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
-
-            // Tres botones con imágenes
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildIconButton('assets/images/My-listing.png', 'My Listing',
-                    '/user-products'),
-                _buildIconButton(
-                    'assets/images/My-orders.png', 'My orders', '/user-orders'),
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildIconButton(
+                        'assets/images/My-listing.png',
+                        () => Navigator.pushNamed(context, '/user-products'),
+                      ),
+                      _buildIconButton(
+                        'assets/images/My-orders.png',
+                        () => Navigator.pushNamed(context, '/user-orders'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildIconButton('assets/images/Pending.png',
+                          () => Navigator.pushNamed(context, '/pending')),
+                      _buildIconButton('assets/images/Update-profile.png',
+                          () => _showEditProfileDialog(context, user)),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            // Botón "Actualizar Datos"
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _isEditing = !_isEditing; // Cambia el estado de edición
-                });
-              },
-              child: Text(_isEditing ? 'Cancelar' : 'Change Data'),
-            ),
-            SizedBox(height: 10),
-
-            // Solo mostrar los campos de texto si estamos en modo de edición
-            if (_isEditing) ...[
-              AppFormField(
-                controller: _nameController,
-                label: 'Name',
-                hint: 'Enter your name',
-                enabled: _isEditing,
-              ),
-              SizedBox(height: 10),
-              AppFormField(
-                controller: _emailController,
-                label: 'Email',
-                hint: 'Enter your email',
-                enabled: _isEditing,
-              ),
-            ],
-
-            // Botón para guardar cambios (solo visible si estamos editando)
-            if (_isEditing) ...[
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Lógica para guardar cambios, aquí podrías guardar la info
-                  print('Name: ${_nameController.text}');
-                  print('Email: ${_emailController.text}');
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  textStyle: TextStyle(fontSize: 18),
-                ),
-                child: Text('Save Changes'),
-              ),
-            ],
-            SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
 
-  // Widget para crear un botón con imagen
-  Widget _buildIconButton(String imagePath, String label, String route) {
+  Widget _buildIconButton(String imagePath, VoidCallback onTap) {
     return Column(
       children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, route);
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        InkWell(
+          onTap: onTap, // Execute the provided function
+          borderRadius: BorderRadius.circular(15),
+          child: Card(
+            elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(15),
             ),
-            backgroundColor: const Color.fromARGB(255, 137, 191, 235),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                imagePath,
-                width: 50,
-                height: 50,
+            child: SizedBox(
+              width: 156.7,
+              height: 226.3,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 5),
-              Text(label, style: TextStyle(fontSize: 16, color: Colors.white)),
-            ],
+            ),
           ),
         ),
       ],
     );
+  }
+
+  void _showEditProfileDialog(BuildContext context, User user) {
+    final TextEditingController nameController =
+        TextEditingController(text: user.name);
+    final TextEditingController emailController =
+        TextEditingController(text: user.email);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Your Profile'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppFormField(
+                  controller: nameController,
+                  label: 'Name',
+                  hint: 'Enter your name',
+                  enabled: true,
+                ),
+                SizedBox(height: 10),
+                AppFormField(
+                  controller: emailController,
+                  label: 'Email',
+                  hint: 'Enter your email',
+                  enabled: true,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _saveChanges(user, nameController.text, emailController.text);
+                Navigator.of(context).pop(); // Close the dialog after saving
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveChanges(User user, String newName, String newEmail) {
+    user.name = newName;
+    user.email = newEmail;
+    // Update user data in Firestore
+    FirestoreService().updateUserData(user).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully')),
+      );
+      setState(() {
+        user.name = newName;
+        user.email = newEmail;
+      });
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $error')),
+      );
+    });
   }
 }
 
