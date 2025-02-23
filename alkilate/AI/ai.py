@@ -14,6 +14,9 @@ else:
     products = []
 
 def suggestions(products, query, top_n=2):
+    if not products:
+        print('No products availables for suggestions')
+        
     query_s = [f"{product['name']} {product['category']} {product['description']}" for product in products]
     
     query_s.append(query)
@@ -29,9 +32,16 @@ def suggestions(products, query, top_n=2):
     p_suggestion = [products[i] for i in index]
     return p_suggestion
 
-query = 'I wanna do sport'
+    if len(p_suggestion) > top_n:
+        print("Not found enought suggestions")
+
+query = 'saw'
 p_suggestion = suggestions(products, query)
 
-print('Suggestions:')
-for product in p_suggestion:
-    print(product['name'])
+if p_suggestion:
+    print('Suggestions:')
+    for product in p_suggestion:
+        print(product['name'], product['id'])
+else:
+    print('No suggestions found')
+    
