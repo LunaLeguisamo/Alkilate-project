@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:alkilate/views/orders/orders.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -156,6 +157,29 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                   SizedBox(height: 26),
+                  // Rent button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              OrderScreen(product: widget.product),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF2375D8),
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.5, horizontal: 160.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        textStyle: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500)),
+                    child: Text('Rent'),
+                  ),
+                  SizedBox(height: 26),
                   Text('Description:',
                       style: TextStyle(
                           fontSize: 20,
@@ -170,42 +194,87 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
                         color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
 
-                  // Comments and rent buttons
-
-                  SizedBox(height: 30),
+                  // Comments
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Rent button
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  OrderScreen(product: widget.product),
+                      SizedBox(height: 18.5),
+                      Text(
+                        'Questions',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF1B1B1B),
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      SizedBox(height: 12.5),
+                      // Input box for adding a comment
+                      SizedBox(
+                        height: 80,
+                        child: TextField(
+                          controller: _commentTextController,
+                          minLines: 3,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: 'Write your question...',
+                            hintStyle: TextStyle(
+                              color: Color(0xFF808080),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
                             ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12.0, horizontal: 24.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            contentPadding: EdgeInsets.all(7.5),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF2375D8)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF2375D8)),
+                            ),
                           ),
                         ),
-                        child: Text('Rent'),
                       ),
-                      SizedBox(height: 20),
-                      // Add comment button
+                      SizedBox(height: 10),
+                      // Submit button
                       ElevatedButton(
                         onPressed: () {
-                          showCommentDialog();
+                          if (_commentTextController.text.isNotEmpty) {
+                            addComment(_commentTextController.text);
+                            _commentTextController.clear();
+                          }
                         },
-                        child: Text('Add Comment'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF2375D8),
+                          foregroundColor: Colors.white,
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                          textStyle: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          minimumSize: Size.fromHeight(27),
+                        ),
+                        child: Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Submit'),
+                              SizedBox(width: 5),
+                              Image.asset(
+                                'assets/images/Vector.png',
+                                width: 12,
+                                height: 12,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+
+                  SizedBox(height: 27),
                   // Comments section
                   CommentsSection(productId: widget.product.id),
                   SizedBox(height: 60),
@@ -218,46 +287,12 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  // Show a text input to add a comment
-  void showCommentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Add Comment'),
-        content: TextField(
-          controller: _commentTextController,
-          decoration: InputDecoration(hintText: 'write a comment..'),
-        ),
-        actions: [
-          // Save
-          TextButton(
-            onPressed: () {
-              addComment(_commentTextController.text);
-              Navigator.pop(context);
-              _commentTextController.clear();
-            },
-            child: Text('Save'),
-          ),
-
-          // Cancel
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _commentTextController.clear();
-            },
-            child: Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void addComment(String text) {
     Comment comment = Comment(
       dateCreated: DateTime.now(),
       product: widget.product.id,
       text: text,
-      user: AuthService().user?.uid ?? '',
+      user: AuthService().user?.displayName ?? '',
     );
     FirestoreService().addCommentToProduct(comment);
   }
@@ -290,8 +325,17 @@ class CommentsSection extends StatelessWidget {
               itemBuilder: (context, index) {
                 final Comment comment = snapshot.data![index];
                 return ListTile(
-                  title: Text(comment.text),
-                  subtitle: Text(comment.dateCreated.toString()),
+                  title: Text(comment.user),
+                  trailing: Text(
+                    DateFormat('MMM dd, yyyy').format(comment.dateCreated),
+                  ),
+                  subtitle: Text(
+                    comment.text,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                        color: Color(0xff000000)),
+                  ),
                 );
               },
             ),
