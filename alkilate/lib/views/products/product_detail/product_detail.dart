@@ -285,7 +285,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF2375D8),
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 146, vertical: 5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3),
             ),
@@ -295,7 +295,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
           child: const Row(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Submit'),
               SizedBox(width: 5),
@@ -342,6 +342,7 @@ class CommentsSection extends StatelessWidget {
           return const Center(child: Text('No comments yet'));
         } else {
           return ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 26),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: snapshot.data!.length,
