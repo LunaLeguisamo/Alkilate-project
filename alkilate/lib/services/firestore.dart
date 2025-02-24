@@ -197,15 +197,15 @@ class FirestoreService {
   }
 
   /// get comments for a product
-  Future<List<app_models.Comment>> getCommentsForProduct(
-      String productId) async {
-    var ref = _db.collection('products').doc(productId).collection('comments');
-
-    var snapshot = await ref.get();
-    print(snapshot.docs);
-    return snapshot.docs
-        .map((doc) => app_models.Comment.fromJson(doc.data()))
-        .toList();
+  Stream<List<app_models.Comment>> getCommentsForProduct(String productId) {
+    return _db
+        .collection('products')
+        .doc(productId)
+        .collection('comments')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => app_models.Comment.fromJson(doc.data()))
+            .toList());
   }
 
   /// Checks if a user document exists in Firestore, and creates one if it doesn't

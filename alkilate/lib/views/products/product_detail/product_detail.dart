@@ -1,10 +1,11 @@
-import 'package:alkilate/services/services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:alkilate/views/orders/orders.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:alkilate/services/services.dart';
+import 'package:alkilate/views/orders/orders.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -31,6 +32,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _commentTextController.dispose();
     super.dispose();
   }
 
@@ -39,256 +41,279 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
     final List<String> images = widget.product.pictures;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(size: 30, color: Color(0xFF1B1B1B)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         foregroundColor: Colors.black,
-        title: Text('Product Detail', style: TextStyle(fontSize: 24)),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Image carousel
-            SizedBox(
-              height: 351,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  ClipRRect(
-                    child: Image.network(
-                      images[index],
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                  return null;
-                },
-              ),
-            ),
-
-            // Page indicator
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: SmoothPageIndicator(
-                controller: _pageController,
-                count: images.length,
-                effect: ExpandingDotsEffect(
-                  activeDotColor: Colors.black,
-                  dotHeight: 10.0,
-                  dotWidth: 10.0,
-                ),
-              ),
-            ),
-
+            // Image carousel with page indicator
+            _buildImageCarousel(images),
             // Product content
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.product.name,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '\$${widget.product.price} / Hour',
-                    style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 11),
-                  // Rating bar
-                  Row(
-                    children: [
-                      Text('${widget.product.rating} '),
-                      RatingBar.builder(
-                        initialRating: widget.product.rating,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemSize: 21.0,
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star,
-                          color: Colors.black,
-                        ),
-                        onRatingUpdate: (value) {
-                          setState(() {
-                            rating = value;
-                          });
-                        },
-                      ),
-                      Spacer(),
-                      // Button
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          print('Button');
-                        },
-                        icon: SvgPicture.asset(
-                          'assets/svg/calendar.svg',
-                          width: 14.2,
-                          height: 14.7,
-                        ),
-                        label: Text(
-                          'See availability',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 13.6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(55),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 26),
-                  // Rent button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              OrderScreen(product: widget.product),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF2375D8),
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 5.5, horizontal: 160.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        textStyle: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w500)),
-                    child: Text('Rent'),
-                  ),
-                  SizedBox(height: 26),
-                  Text('Description:',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w300,
-                          color: Color(0xFF1B1B1B))),
-                  SizedBox(height: 11.8),
-                  Text(
-                    widget.product.description,
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w200,
-                        color: const Color.fromARGB(255, 0, 0, 0)),
-                  ),
-
-                  // Comments
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 18.5),
-                      Text(
-                        'Questions',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFF1B1B1B),
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      SizedBox(height: 12.5),
-                      // Input box for adding a comment
-                      SizedBox(
-                        height: 80,
-                        child: TextField(
-                          controller: _commentTextController,
-                          minLines: 3,
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            hintText: 'Write your question...',
-                            hintStyle: TextStyle(
-                              color: Color(0xFF808080),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                            ),
-                            contentPadding: EdgeInsets.all(7.5),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF2375D8)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF2375D8)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // Submit button
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_commentTextController.text.isNotEmpty) {
-                            addComment(_commentTextController.text);
-                            _commentTextController.clear();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF2375D8),
-                          foregroundColor: Colors.white,
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          textStyle: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          minimumSize: Size.fromHeight(27),
-                        ),
-                        child: Flexible(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('Submit'),
-                              SizedBox(width: 5),
-                              Image.asset(
-                                'assets/images/Vector.png',
-                                width: 12,
-                                height: 12,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 27),
-                  // Comments section
-                  CommentsSection(productId: widget.product.id),
-                  SizedBox(height: 60),
-                ],
-              ),
-            ),
+            _buildProductContent(),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildImageCarousel(List<String> images) {
+    return SizedBox(
+      height: 351,
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return CachedNetworkImage(
+                imageUrl: images[index],
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              );
+            },
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 10,
+            child: Center(
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: images.length,
+                effect: const WormEffect(
+                  activeDotColor: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductContent() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.product.name,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '\$${widget.product.price} / Hour',
+            style: const TextStyle(
+              fontSize: 23,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 11),
+          _buildRatingBar(),
+          const SizedBox(height: 26),
+          _buildRentButton(),
+          const SizedBox(height: 26),
+          _buildDescription(),
+          const SizedBox(height: 18.5),
+          _buildCommentsSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRatingBar() {
+    return Row(
+      children: [
+        Text('${widget.product.rating} '),
+        RatingBar.builder(
+          initialRating: widget.product.rating,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemSize: 21.0,
+          itemBuilder: (context, index) => const Icon(
+            Icons.star,
+            color: Colors.black,
+          ),
+          onRatingUpdate: (value) {
+            setState(() {
+              rating = value;
+            });
+          },
+        ),
+        const Spacer(),
+        ElevatedButton.icon(
+          onPressed: () {
+            print('Button');
+          },
+          icon: SvgPicture.asset(
+            'assets/svg/calendar.svg',
+            width: 14.2,
+            height: 14.7,
+          ),
+          label: const Text(
+            'See availability',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 13.6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(55),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRentButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) =>
+                OrderScreen(product: widget.product),
+          ),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF2375D8),
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 5.5, horizontal: 160.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3),
+          ),
+          textStyle:
+              const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+      child: const Text('Rent'),
+    );
+  }
+
+  Widget _buildDescription() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Description:',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w300,
+            color: Color(0xFF1B1B1B),
+          ),
+        ),
+        const SizedBox(height: 11.8),
+        Text(
+          widget.product.description,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w200,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCommentsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Questions',
+          style: TextStyle(
+            fontSize: 20,
+            color: Color(0xFF1B1B1B),
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        const SizedBox(height: 12.5),
+        SizedBox(
+          child: TextField(
+            controller: _commentTextController,
+            minLines: 3,
+            maxLines: 3,
+            decoration: InputDecoration(
+              hintText: 'Write your question...',
+              hintStyle: const TextStyle(
+                color: Color(0xFF808080),
+                fontSize: 12,
+                fontWeight: FontWeight.w300,
+              ),
+              contentPadding: const EdgeInsets.all(7.5),
+              border: const OutlineInputBorder(),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF2375D8)),
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF2375D8)),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            if (_commentTextController.text.isNotEmpty) {
+              addComment(_commentTextController.text);
+              _commentTextController.clear();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Comment submitted successfully!'),
+                ),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF2375D8),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Submit'),
+              SizedBox(width: 5),
+              Image(
+                image: AssetImage('assets/images/Vector.png'),
+                width: 12,
+                height: 12,
+              ),
+            ],
+          ),
+        ),
+        CommentsSection(productId: widget.product.id),
+      ],
+    );
+  }
+
   void addComment(String text) {
-    Comment comment = Comment(
+    final comment = Comment(
       dateCreated: DateTime.now(),
       product: widget.product.id,
       text: text,
@@ -299,72 +324,47 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
 }
 
 class CommentsSection extends StatelessWidget {
-  final String productId; // Pass the product ID to fetch comments
+  final String productId;
 
   const CommentsSection({required this.productId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Comment>>(
-      future: FirestoreService().getCommentsForProduct(productId),
+    return StreamBuilder<List<Comment>>(
+      stream: FirestoreService().getCommentsForProduct(productId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator()); // Show a loader
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(
-              child: Text('Error loading comments')); // Show error message
+              child: Text('Error loading comments: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No comments yet')); // Show empty state
+          return const Center(child: Text('No comments yet'));
         } else {
-          return SizedBox(
-            height: 200, // Set a fixed height
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // Disable scrolling
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final Comment comment = snapshot.data![index];
-                return ListTile(
-                  title: Text(comment.user),
-                  trailing: Text(
-                    DateFormat('MMM dd, yyyy').format(comment.dateCreated),
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final comment = snapshot.data![index];
+              return ListTile(
+                title: Text(comment.user),
+                trailing: Text(
+                  DateFormat('MMM dd, yyyy').format(comment.dateCreated),
+                ),
+                subtitle: Text(
+                  comment.text,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black,
                   ),
-                  subtitle: Text(
-                    comment.text,
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff000000)),
-                  ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           );
         }
       },
     );
-  }
-}
-
-// Widget to display each feature
-class FeatureItem extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  const FeatureItem({super.key, required this.text, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(children: [
-          Icon(icon, color: Colors.black, size: 22),
-          SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 16, color: Colors.black),
-            ),
-          ),
-        ]));
   }
 }
