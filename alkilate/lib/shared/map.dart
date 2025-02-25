@@ -52,6 +52,7 @@ class LocationPickerWidgetState extends State<LocationPickerWidget> {
                             .defaultMarker, // Use default marker
                       ),
                     },
+              cloudMapId: 'edaa0dfe7e90088b',
             ),
           );
         }
