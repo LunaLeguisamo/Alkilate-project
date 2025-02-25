@@ -54,12 +54,19 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       modifiedDate: json['modifiedDate'] == null
           ? null
           : DateTime.parse(json['modifiedDate'] as String),
+      disponibleFrom: json['disponibleFrom'] == null
+          ? null
+          : DateTime.parse(json['disponibleFrom'] as String),
+      disponibleTo: json['disponibleTo'] == null
+          ? null
+          : DateTime.parse(json['disponibleTo'] as String),
       owner: json['owner'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
       brand: json['brand'] as String? ?? '',
       category: json['category'] as String? ?? '',
-      location: json['location'] as String? ?? '',
+      location:
+          Product._latLngFromJson(json['location'] as Map<String, dynamic>?),
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       time: json['time'] as String? ?? '',
       availability: json['availability'] as bool? ?? false,
@@ -90,7 +97,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'description': instance.description,
       'brand': instance.brand,
       'category': instance.category,
-      'location': instance.location,
+      'location': Product._latLngToJson(instance.location),
       'price': instance.price,
       'time': instance.time,
       'availability': instance.availability,
@@ -99,6 +106,8 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'approved': instance.approved,
       'rejected': instance.rejected,
       'message': instance.message,
+      'disponibleFrom': instance.disponibleFrom.toIso8601String(),
+      'disponibleTo': instance.disponibleTo.toIso8601String(),
       'comments': instance.comments,
       'pictures': instance.pictures,
       'bankAccount': instance.bankAccount,

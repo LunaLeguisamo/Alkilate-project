@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
+import 'package:alkilate/shared/map.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
@@ -45,6 +46,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     '/Day',
     '/Use',
   ];
+
+  LatLng? _selectedLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +103,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   // Date Range Selector
                   _buildDateRangeSelector(),
                   const SizedBox(height: 20),
+
+                  LocationPickerWidget(
+                    onLocationSelected: (location) {
+                      setState(() {
+                        _selectedLocation = location;
+                      });
+                    },
+                  ),
+
+                  SizedBox(height: 20),
                   _buildTextField(
                       descriptionController, 'Write the description',
                       maxLines: 4),
@@ -305,17 +318,37 @@ class _AddProductScreenState extends State<AddProductScreen> {
           child: Image.asset('assets/images/upload.png'),
         ),
         if (pickedFiles != null)
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+          SizedBox(
+            height:
+                200, // Set a fixed height or use a dynamic height based on the number of items
+            child: GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: pickedFiles!.length,
+              itemBuilder: (context, index) {
+                return Stack(
+                  children: [
+                    Image.file(pickedFiles![index], fit: BoxFit.cover),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(Icons.close, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            pickedFiles!.removeAt(index);
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-            itemCount: pickedFiles!.length,
-            itemBuilder: (context, index) {
-              return Image.file(pickedFiles![index], fit: BoxFit.cover);
-            },
           ),
       ],
     );
@@ -363,6 +396,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
         deposit: double.parse(depositController.text),
         bankAccount: bankAccountController.text,
         pictures: imageUrls,
+        location: _selectedLocation ??
+            LatLng(0, 0), // Provide a default value or handle null case
         disponibleFrom: _selectedDateRange!.start, // Add start date
         disponibleTo: _selectedDateRange!.end, // Add end date
       );

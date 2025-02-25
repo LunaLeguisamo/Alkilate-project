@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 part 'models.g.dart';
@@ -48,7 +49,11 @@ class Product {
   final String description;
   final String brand;
   final String category;
-  final String location;
+  @JsonKey(
+    fromJson: _latLngFromJson,
+    toJson: _latLngToJson,
+  )
+  final LatLng? location;
   final double price;
   final String time;
   final bool availability;
@@ -74,7 +79,7 @@ class Product {
     this.description = '',
     this.brand = '',
     this.category = '',
-    this.location = '',
+    this.location,
     this.price = 0.0,
     this.time = '',
     this.availability = false,
@@ -97,6 +102,20 @@ class Product {
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
   Map<String, dynamic> toJson() => _$ProductToJson(this);
+
+  static LatLng? _latLngFromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+    return LatLng(json['lat'], json['lng']);
+  }
+
+  // Helper function to convert LatLng to JSON
+  static Map<String, dynamic>? _latLngToJson(LatLng? location) {
+    if (location == null) return null;
+    return {
+      'lat': location.latitude,
+      'lng': location.longitude,
+    };
+  }
 }
 
 @JsonSerializable()
