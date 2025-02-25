@@ -50,12 +50,15 @@ class Product {
   final String category;
   final String location;
   final double price;
+  final String time;
   final bool availability;
   final double rating;
   final double deposit;
   final bool approved;
   final bool rejected;
   final String message;
+  final DateTime disponibleFrom;
+  final DateTime disponibleTo;
   final List<Map<String, dynamic>> comments;
   final List<String> pictures;
   final String bankAccount;
@@ -64,6 +67,8 @@ class Product {
     String? id,
     DateTime? dateCreated,
     DateTime? modifiedDate,
+    DateTime? disponibleFrom,
+    DateTime? disponibleTo,
     this.owner = '',
     this.name = '',
     this.description = '',
@@ -71,6 +76,7 @@ class Product {
     this.category = '',
     this.location = '',
     this.price = 0.0,
+    this.time = '',
     this.availability = false,
     this.deposit = 0.0,
     this.rating = 5.0,
@@ -84,7 +90,9 @@ class Product {
     this.bankAccount = '',
   })  : dateCreated = dateCreated ?? DateTime.now(),
         modifiedDate = modifiedDate ?? DateTime.now(),
-        id = id ?? Uuid().v4();
+        id = id ?? Uuid().v4(),
+        disponibleFrom = dateCreated ?? DateTime.now(),
+        disponibleTo = dateCreated ?? DateTime.now();
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
