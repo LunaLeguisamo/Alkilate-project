@@ -14,29 +14,25 @@ class _CalendarAvailabilityWidgetState
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
 
-  // Rango de fechas seleccionadas para reserva (de 20 a 25 de febrero)
+  // Rango de fechas seleccionadas para reserva (del 20 al 25 de febrero de 2024)
   final DateTime _startAvailability = DateTime.utc(2024, 2, 20);
   final DateTime _endAvailability = DateTime.utc(2024, 2, 25);
 
-  // Función para comprobar si un día está dentro del rango de fechas de reserva
+  // Función para comprobar si un día está dentro del rango de fechas reservadas
   bool _isDateReserved(DateTime day) {
-    // Ignorar la hora para comparación
     DateTime dayStart = DateTime(day.year, day.month, day.day);
-    DateTime startAvailability = DateTime(_startAvailability.year,
-        _startAvailability.month, _startAvailability.day);
-    DateTime endAvailability = DateTime(
-        _endAvailability.year, _endAvailability.month, _endAvailability.day);
-
-    return dayStart.isAfter(startAvailability.subtract(Duration(days: 1))) &&
-            dayStart.isBefore(endAvailability.add(Duration(days: 1))) ||
-        dayStart.isAtSameMomentAs(startAvailability) ||
-        dayStart.isAtSameMomentAs(endAvailability);
+    return dayStart
+            .isAfter(_startAvailability.subtract(const Duration(days: 1))) &&
+        dayStart.isBefore(_endAvailability.add(const Duration(days: 1)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Calendario de Disponibilidad')),
+      appBar: AppBar(
+        title: const Text('Calendario de Disponibilidad'),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Column(
         children: [
           TableCalendar(
@@ -54,15 +50,18 @@ class _CalendarAvailabilityWidgetState
             },
             calendarFormat: CalendarFormat.month,
             availableCalendarFormats: const {
-              CalendarFormat.month: 'Month',
+              CalendarFormat.month: 'Mes',
             },
-            headerStyle: HeaderStyle(
+            headerStyle: const HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
+              headerPadding: EdgeInsets.only(top: 16.0),
+              leftChevronIcon: Icon(Icons.chevron_left),
+              rightChevronIcon: Icon(Icons.chevron_right),
             ),
             calendarBuilders: CalendarBuilders(
+              // Personaliza el aspecto de los días reservados
               defaultBuilder: (context, day, focusedDay) {
-                // Marcar en rojo los días reservados
                 if (_isDateReserved(day)) {
                   return Container(
                     margin: const EdgeInsets.all(4.0),
@@ -73,13 +72,15 @@ class _CalendarAvailabilityWidgetState
                     child: Center(
                       child: Text(
                         '${day.day}',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   );
                 }
-                return null;
+                return null; // Dejar el estilo predeterminado para otros días
               },
             ),
           ),
