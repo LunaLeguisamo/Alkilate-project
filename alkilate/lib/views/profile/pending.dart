@@ -172,7 +172,7 @@ class OrderListScreenState extends State<OrderListScreen> {
                         : ListView.separated(
                             itemCount: _orders.length,
                             separatorBuilder: (context, index) =>
-                                const Divider(),
+                                const Divider(color: Colors.transparent),
                             itemBuilder: (context, index) {
                               var order = _orders[index];
                               return OrderListItem(

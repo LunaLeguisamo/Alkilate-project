@@ -1,32 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:alkilate/services/services.dart';
-import 'package:intl/intl.dart'; // For date formatting
 
-class OrderListItem extends StatelessWidget {
+class MyOrderListItem extends StatelessWidget {
   final Order order;
-  final VoidCallback onCancel;
-  final VoidCallback onAccept;
 
-  const OrderListItem({
+  const MyOrderListItem({
     super.key,
     required this.order,
-    required this.onCancel,
-    required this.onAccept,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Format dates using the intl package
-    final dateFormat =
-        DateFormat('MMM dd, yyyy'); // Customize the format as needed
-    final fromDate = dateFormat.format(order.fromDate);
-    final untilDate = dateFormat.format(order.untilDate);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 22),
       child: Container(
         padding: const EdgeInsets.all(9),
-        height: 150,
+        height: 115,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -73,7 +62,7 @@ class OrderListItem extends StatelessWidget {
                   const SizedBox(
                       height: 4), // Spacing between product name and price
                   Text(
-                    'Total Price: \$${order.totalPrice.toStringAsFixed(2)}\nFrom: $fromDate \nUntil: $untilDate',
+                    '\$${order.totalPrice.toString()}',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w300,
@@ -85,17 +74,12 @@ class OrderListItem extends StatelessWidget {
             // Additional Column (if needed)
             Padding(
               padding: const EdgeInsets.all(17.0),
-              child: Column(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.check, color: Color(0xFF2375D8)),
-                    onPressed: onAccept,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.cancel),
-                    onPressed: onCancel,
-                  ),
-                ],
+              child: Text(
+                order.status.toUpperCase(),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFC89A02)),
               ),
             ),
           ],
