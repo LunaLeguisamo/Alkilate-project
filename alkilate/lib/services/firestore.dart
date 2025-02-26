@@ -46,6 +46,69 @@ class FirestoreService {
     });
   }
 
+  ///Delete a product
+  Future<void> deleteProduct(String productId) async {
+    var ref = _db.collection('products').doc(productId);
+    await ref.delete();
+    ref = _db
+        .collection('Users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .collection('products')
+        .doc(productId);
+    await ref.delete();
+    return;
+  }
+
+  ///Update the availability of a product to the oposite bool
+  Future<void> toggleProductAvailability(String productId) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      // Get references to the documents
+      final productRef = firestore.collection('products').doc(productId);
+      final userRef = firestore
+          .collection('Users')
+          .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+          .collection('products')
+          .doc(productId);
+
+      // Fetch both documents
+      final productSnapshot = await productRef.get();
+      final userSnapshot = await userRef.get();
+
+      if (!productSnapshot.exists || !userSnapshot.exists) {
+        throw Exception('Product or user product document does not exist');
+      }
+
+      // Get current availability
+      final bool currentProductAvailability =
+          productSnapshot.data()?['availability'] ?? false;
+      final bool currentUserProductAvailability =
+          userSnapshot.data()?['availability'] ?? false;
+
+      // Ensure both documents have the same availability value
+      if (currentProductAvailability != currentUserProductAvailability) {
+        throw Exception('Product availability mismatch between collections');
+      }
+
+      // Toggle availability
+      final bool newAvailability = !currentProductAvailability;
+
+      // Use a batch to update both documents atomically
+      final batch = firestore.batch();
+      batch.update(productRef, {'availability': newAvailability});
+      batch.update(userRef, {'availability': newAvailability});
+
+      // Commit the batch
+      await batch.commit();
+
+      print('Product availability toggled successfully: $newAvailability');
+    } catch (e) {
+      print('Error toggling product availability: $e');
+      rethrow; // Re-throw the error for the caller to handle
+    }
+  }
+
   Future<List<app_models.Product>> getProductList() async {
     var ref = _db.collection('products');
 

@@ -56,7 +56,7 @@ class Product {
   final LatLng? location;
   final double price;
   final String time;
-  final bool availability;
+  bool availability;
   final double rating;
   final double deposit;
   final bool approved;

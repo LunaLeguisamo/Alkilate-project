@@ -341,7 +341,8 @@ class CommentsSection extends StatelessWidget {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No comments yet'));
         } else {
-          return ListView.builder(
+          return ListView.separated(
+            separatorBuilder: (context, index) => const Divider(),
             padding: EdgeInsets.symmetric(vertical: 26),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
