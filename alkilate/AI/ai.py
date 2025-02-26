@@ -6,7 +6,7 @@ import requests
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Fetch products from the API
-"""
+
 url = 'https://app-p7vfglazhq-uc.a.run.app/products'
 response = requests.get(url)
 
@@ -19,8 +19,8 @@ if response.status_code == 200:
 else:
     print(f'Error loading products: {response.status_code}')
     products = []
+    
 """
-
 products = [
     {"name": "Running Shoes", "category": "Sports", "description": "Lightweight running shoes for maximum performance."},
     {"name": "Yoga Shoes", "category": "Clothes", "description": "Yoga shoes for maximum relaxing."},
@@ -48,6 +48,7 @@ products = [
     {"name": "Party Decorations", "category": "Decor", "description": "Themed decorations to create a fun and festive birthday atmosphere."},
     {"name": "Gift Baskets", "category": "Gifts", "description": "Beautifully arranged gift baskets filled with treats for birthdays."}
 ]
+"""
 
 def suggestions(products, query, top_n=10):
     info = [f"{product['name']} {product['category']} {product['description']}" for product in products]
