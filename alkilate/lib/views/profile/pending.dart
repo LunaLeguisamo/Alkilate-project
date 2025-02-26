@@ -138,104 +138,122 @@ class OrderListScreenState extends State<OrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavBar(),
-      body: Column(
-        children: [
-          if (user != null)
-            ProfileBanner(
-                user: user!), // Display banner only if user is not null
-          SizedBox(
-            // Wrap the ListView in SizedBox with a fixed height
-            height: MediaQuery.of(context).size.height *
-                0.6, // Adjust height as needed
-            child: RefreshIndicator(
-              onRefresh: _refreshOrders,
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _orders.isEmpty
-                      ? const Center(child: Text('No orders available'))
-                      : ListView.separated(
-                          itemCount: _orders.length,
-                          separatorBuilder: (context, index) => const Divider(),
-                          itemBuilder: (context, index) {
-                            var order = _orders[index];
-                            return OrderListItem(
-                              order: order,
-                              onCancel: () async {
-                                await _showConfirmationDialog(
-                                  context,
-                                  '¿Estás seguro de que deseas cancelar este pedido?',
-                                  () async {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    try {
-                                      await FirestoreService()
-                                          .cancelOrder(order.id);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Pedido cancelado'),
-                                        ),
-                                      );
-                                      setState(() {
-                                        _orders.removeAt(index);
-                                      });
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error: $e'),
-                                        ),
-                                      );
-                                    } finally {
-                                      setState(() {
-                                        _isLoading = false;
-                                      });
-                                    }
-                                  },
-                                );
-                              },
-                              onAccept: () async {
-                                await _showConfirmationDialog(
-                                  context,
-                                  '¿Estás seguro de que deseas aceptar este pedido?',
-                                  () async {
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
-                                    try {
-                                      await FirestoreService()
-                                          .acceptOrder(order.id, order.buyer);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Pedido aceptado'),
-                                        ),
-                                      );
-                                      setState(() {
-                                        _orders.removeAt(index);
-                                      });
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error: $e'),
-                                        ),
-                                      );
-                                    } finally {
-                                      setState(() {
-                                        _isLoading = false;
-                                      });
-                                    }
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/pending-illustration.png'),
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.bottomCenter,
           ),
-        ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (user != null)
+              ProfileBanner(
+                  user: user!), // Display banner only if user is not null
+            Padding(
+              padding: const EdgeInsets.all(22),
+              child: Text(
+                'Incoming orders',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshOrders,
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _orders.isEmpty
+                        ? const Center(child: Text('No orders available'))
+                        : ListView.separated(
+                            itemCount: _orders.length,
+                            separatorBuilder: (context, index) =>
+                                const Divider(),
+                            itemBuilder: (context, index) {
+                              var order = _orders[index];
+                              return OrderListItem(
+                                order: order,
+                                onCancel: () async {
+                                  await _showConfirmationDialog(
+                                    context,
+                                    '¿Estás seguro de que deseas cancelar este pedido?',
+                                    () async {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      try {
+                                        await FirestoreService()
+                                            .cancelOrder(order.id);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Pedido cancelado'),
+                                          ),
+                                        );
+                                        setState(() {
+                                          _orders.removeAt(index);
+                                        });
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text('Error: $e'),
+                                          ),
+                                        );
+                                      } finally {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                                onAccept: () async {
+                                  await _showConfirmationDialog(
+                                    context,
+                                    '¿Estás seguro de que deseas aceptar este pedido?',
+                                    () async {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      try {
+                                        await FirestoreService()
+                                            .acceptOrder(order.id, order.buyer);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Pedido aceptado'),
+                                          ),
+                                        );
+                                        setState(() {
+                                          _orders.removeAt(index);
+                                        });
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text('Error: $e'),
+                                          ),
+                                        );
+                                      } finally {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

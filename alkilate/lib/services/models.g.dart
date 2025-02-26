@@ -115,30 +115,32 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       id: json['id'] as String?,
-      dateCreated: json['dateCreated'] == null
+      fromDate: json['fromDate'] == null
           ? null
-          : DateTime.parse(json['dateCreated'] as String),
-      modifiedDate: json['modifiedDate'] == null
+          : DateTime.parse(json['fromDate'] as String),
+      untilDate: json['untilDate'] == null
           ? null
-          : DateTime.parse(json['modifiedDate'] as String),
+          : DateTime.parse(json['untilDate'] as String),
       buyer: json['buyer'] as String? ?? '',
       seller: json['seller'] as String? ?? '',
       product: json['product'] as String? ?? '',
       productId: json['productId'] as String? ?? '',
+      productImage: json['productImage'] as String? ?? '',
       totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0.0,
       status: json['status'] as String? ?? '',
     );
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated.toIso8601String(),
-      'modifiedDate': instance.modifiedDate.toIso8601String(),
+      'fromDate': instance.fromDate.toIso8601String(),
+      'untilDate': instance.untilDate.toIso8601String(),
       'buyer': instance.buyer,
       'seller': instance.seller,
       'product': instance.product,
       'productId': instance.productId,
       'totalPrice': instance.totalPrice,
       'status': instance.status,
+      'productImage': instance.productImage,
     };
 
 Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(

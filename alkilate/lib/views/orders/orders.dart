@@ -51,8 +51,9 @@ class _OrderScreenState extends State<OrderScreen> {
                   buyer: AuthService().user?.uid ?? '',
                   status: 'pending',
                   totalPrice: widget.product.price,
-                  dateCreated: DateTime.now(),
-                  modifiedDate: DateTime.now(),
+                  fromDate: widget.product.disponibleFrom,
+                  untilDate: widget.product.disponibleTo,
+                  productImage: widget.product.pictures[0],
                 );
                 // Make an HTTP request to a specific URL
                 final response = await http.post(

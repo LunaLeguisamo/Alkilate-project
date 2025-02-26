@@ -121,27 +121,29 @@ class Product {
 @JsonSerializable()
 class Order {
   final String id;
-  final DateTime dateCreated;
-  final DateTime modifiedDate;
+  final DateTime fromDate;
+  final DateTime untilDate;
   final String buyer;
   final String seller;
   final String product;
   final String productId;
   final double totalPrice;
   final String status;
+  final String productImage;
 
   Order({
     String? id,
-    DateTime? dateCreated,
-    DateTime? modifiedDate,
+    DateTime? fromDate,
+    DateTime? untilDate,
     this.buyer = '',
     this.seller = '',
     this.product = '',
     this.productId = '',
+    this.productImage = '',
     this.totalPrice = 0.0,
     this.status = '',
-  })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now(),
+  })  : fromDate = fromDate ?? DateTime.now(),
+        untilDate = untilDate ?? DateTime.now(),
         id = id ?? Uuid().v4();
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
