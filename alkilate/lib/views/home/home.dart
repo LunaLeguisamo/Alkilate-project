@@ -97,15 +97,21 @@ class HomeScreen extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                      'Vestibulum nec ultricies nunc. Nullam in purus nec nulla '
-                      'vulputate lacinia. Nulla facilisi. Nullam in purus nec nulla '
-                      'vulputate lacinia. Nulla facilisi.',
+                      'Alkilate was born as a solution within the circular economy, optimizing the use of underutilized goods and promoting a more efficient and sustainable consumption model. Through artificial intelligence, we facilitate the ideal match between those who are searching and those who are offering, ensuring secure and seamless transactions. More than just a rental platform, we offer a comprehensive experience that includes support, trust, and personalization, setting us apart from simple marketplaces. Our focus is not just on connecting parties, but on providing a complete solution that transforms the way people access what they need.',
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                         color: Color(0xFF000000),
                       ),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    child: Image(
+                      image: AssetImage('assets/images/about-us.png'),
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ],
