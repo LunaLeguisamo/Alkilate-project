@@ -89,11 +89,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Publish your own product or service',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.normal,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
+                    child: const Text(
+                      'Publish your own product or service',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -129,14 +132,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   _buildFilePicker(),
                   const SizedBox(height: 20),
                   _buildAddProductButton(),
+                  const SizedBox(height: 60),
                 ],
               ),
             ),
           ),
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+          if (isLoading) const LoadingScreen(),
         ],
       ),
     );
