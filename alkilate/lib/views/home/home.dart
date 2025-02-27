@@ -114,6 +114,11 @@ class HomeScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/calendar'),
+                    child: const Text('Calendar'),
+                  ),
                 ],
               ),
             ),

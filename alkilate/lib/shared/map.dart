@@ -1,81 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
-class LocationPickerWidget extends StatefulWidget {
-  final Function(LatLng)? onLocationSelected;
-
-  const LocationPickerWidget({super.key, this.onLocationSelected});
+class GoogleMapWidget extends StatefulWidget {
+  const GoogleMapWidget({super.key});
 
   @override
-  LocationPickerWidgetState createState() => LocationPickerWidgetState();
+  _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
 }
 
-class LocationPickerWidgetState extends State<LocationPickerWidget> {
-  LatLng? _selectedLocation;
+class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+  late GoogleMapController _controller;
+  final Set<Marker> _markers = {}; // Para marcar lugares en el mapa
+
+  // Ubicación inicial para centrar el mapa
+  static const LatLng _center = LatLng(37.7749, -122.4194); // San Francisco
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller = controller;
+  }
+
+  // Agregar un marcador en el mapa
+  void _onAddMarkerButtonPressed() {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('marker_1'),
+          position: LatLng(37.7749, -122.4194), // Coordenadas de un lugar
+          infoWindow: InfoWindow(
+            title: 'Ubicación',
+            snippet: 'Este es un marcador de ejemplo.',
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: requestLocationPermission(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error requesting location permission'));
-        } else {
-          return SizedBox(
-            height: 200, // Set a fixed height for the map
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(-34.9011, -56.1645), // Montevideo, Uruguay
-                zoom: 12,
-              ),
-              myLocationEnabled: true, // Enable My Location button
-              myLocationButtonEnabled: true, // Show My Location button
-              onTap: (LatLng location) {
-                print('Tapped location: $location'); // Debugging
-                setState(() {
-                  _selectedLocation = location;
-                });
-                if (widget.onLocationSelected != null) {
-                  widget.onLocationSelected!(location);
-                }
-              },
-              markers: _selectedLocation == null
-                  ? {}
-                  : {
-                      Marker(
-                        markerId: MarkerId('selectedLocation'),
-                        position: _selectedLocation!,
-                        icon: BitmapDescriptor
-                            .defaultMarker, // Use default marker
-                      ),
-                    },
-              cloudMapId: 'edaa0dfe7e90088b',
-            ),
-          );
-        }
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Google Maps en Flutter'),
+      ),
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _center,
+          zoom: 10.0, // Nivel de zoom inicial
+        ),
+        markers: _markers, // Mostrar los marcadores en el mapa
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onAddMarkerButtonPressed,
+        child: Icon(Icons.add_location),
+      ),
     );
-  }
-}
-
-Future<void> requestLocationPermission() async {
-  Location location = Location();
-  bool serviceEnabled = await location.serviceEnabled();
-  if (!serviceEnabled) {
-    serviceEnabled = await location.requestService();
-    if (!serviceEnabled) {
-      return;
-    }
-  }
-
-  PermissionStatus permissionStatus = await location.hasPermission();
-  if (permissionStatus == PermissionStatus.denied) {
-    permissionStatus = await location.requestPermission();
-    if (permissionStatus != PermissionStatus.granted) {
-      return;
-    }
   }
 }

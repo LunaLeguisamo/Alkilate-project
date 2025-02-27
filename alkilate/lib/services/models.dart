@@ -1,6 +1,7 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
+
 part 'models.g.dart';
 
 @JsonSerializable()
@@ -67,6 +68,7 @@ class Product {
   final List<Map<String, dynamic>> comments;
   final List<String> pictures;
   final String bankAccount;
+  final List<String> availableDates;
 
   Product({
     String? id,
@@ -93,6 +95,7 @@ class Product {
       'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'
     ],
     this.bankAccount = '',
+    this.availableDates = const [],
   })  : dateCreated = dateCreated ?? DateTime.now(),
         modifiedDate = modifiedDate ?? DateTime.now(),
         id = id ?? Uuid().v4(),

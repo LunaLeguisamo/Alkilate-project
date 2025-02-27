@@ -6,6 +6,7 @@ import 'package:alkilate/views/products/add_product/add_product.dart';
 import 'package:alkilate/views/profile/user_orders.dart';
 import 'package:alkilate/views/profile/user_products.dart';
 import 'package:alkilate/views/profile/pending.dart';
+import 'package:alkilate/shared/calendar.dart';
 
 var appRoutes = {
   '/': (context) => HomeScreen(),
@@ -16,4 +17,5 @@ var appRoutes = {
   '/user-orders': (context) => UserOrdersScreen(),
   '/user-products': (context) => UserProductsScreen(),
   '/pending': (context) => UserPendingScreen(),
+  '/calendar': (context) => CalendarAvailabilityWidget(),
 };
