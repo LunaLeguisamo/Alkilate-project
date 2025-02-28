@@ -36,16 +36,17 @@ def suggestions(products, query, top_n=10):
     suggested_products = [products[i] for i in similar_indices if similarities[i] > umbral]
     return suggested_products
 
-@app.route('/suggestions', methods=['POST'])
+@app.route('/suggestions', methods=['POST', 'GET'])
 def get_suggestions():
-    """Endpoint para obtener sugerencias de productos."""
+    if request.method == 'GET':
+        return jsonify({"message": "OLA"}), 200
+
     data = request.get_json()
     query = data.get('query', '')
 
     if not query:
         return jsonify({'error': 'No query provided'}), 400
 
-    # Cargar productos dinámicamente
     products = fetch_products()
     suggested_products = suggestions(products, query)
     
