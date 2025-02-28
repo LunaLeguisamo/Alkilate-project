@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
-import 'package:alkilate/shared/map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -106,14 +105,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   // Date Range Selector
                   _buildDateRangeSelector(),
                   const SizedBox(height: 20),
-
-                  LocationPickerWidget(
-                    onLocationSelected: (location) {
-                      setState(() {
-                        _selectedLocation = location;
-                      });
-                    },
-                  ),
 
                   SizedBox(height: 20),
                   _buildTextField(

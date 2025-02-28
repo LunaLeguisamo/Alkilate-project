@@ -5,11 +5,11 @@ class CalendarAvailabilityWidget extends StatefulWidget {
   const CalendarAvailabilityWidget({super.key});
 
   @override
-  _CalendarAvailabilityWidgetState createState() =>
-      _CalendarAvailabilityWidgetState();
+  CalendarAvailabilityWidgetState createState() =>
+      CalendarAvailabilityWidgetState();
 }
 
-class _CalendarAvailabilityWidgetState
+class CalendarAvailabilityWidgetState
     extends State<CalendarAvailabilityWidget> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();

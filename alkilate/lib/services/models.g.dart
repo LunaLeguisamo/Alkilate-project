@@ -86,6 +86,10 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
             'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'
           ],
       bankAccount: json['bankAccount'] as String? ?? '',
+      availableDates: (json['availableDates'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
@@ -111,6 +115,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'comments': instance.comments,
       'pictures': instance.pictures,
       'bankAccount': instance.bankAccount,
+      'availableDates': instance.availableDates,
     };
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(

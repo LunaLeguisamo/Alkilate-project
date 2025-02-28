@@ -5,10 +5,11 @@ class GoogleMapWidget extends StatefulWidget {
   const GoogleMapWidget({super.key});
 
   @override
-  _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
+  GoogleMapWidgetState createState() => GoogleMapWidgetState();
 }
 
-class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+class GoogleMapWidgetState extends State<GoogleMapWidget> {
+  // ignore: unused_field
   late GoogleMapController _controller;
   final Set<Marker> _markers = {}; // Para marcar lugares en el mapa
 
