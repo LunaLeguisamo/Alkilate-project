@@ -47,6 +47,40 @@ class FirestoreService {
     });
   }
 
+  /// Aprove a product
+  Future<void> approveProduct(String productId, String userId) async {
+    await _db
+        .collection('Users')
+        .doc(userId)
+        .collection('products')
+        .doc(productId)
+        .update({'approved': true});
+    return await _db
+        .collection('products')
+        .doc(productId)
+        .update({'approved': true});
+  }
+
+  /// Reject a product
+  Future<void> rejectProduct(
+      String productId, String rejectionReason, String userId) async {
+    await _db
+        .collection('Users')
+        .doc(userId)
+        .collection('products')
+        .doc(productId)
+        .update({
+      'rejected': true,
+      'approved': false,
+      'message': rejectionReason,
+    });
+    return await _db.collection('products').doc(productId).update({
+      'rejected': true,
+      'approved': false,
+      'message': rejectionReason,
+    });
+  }
+
   ///Delete a product
   Future<void> deleteProduct(String productId) async {
     var ref = _db.collection('products').doc(productId);

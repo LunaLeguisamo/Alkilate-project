@@ -15,6 +15,9 @@ class ProductSearchScreen extends StatefulWidget {
 }
 
 class ProductSearchScreenState extends State<ProductSearchScreen> {
+  bool isAdmin = false;
+  bool viewAsAdmin =
+      true; // Track whether admin is viewing as admin or normal user
   bool showFilters = false;
   bool isLoading = true;
   TextEditingController searchController = TextEditingController();
@@ -36,7 +39,31 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    _checkAdminStatus();
+  }
+
+  // Check if the current user is an admin
+  Future<void> _checkAdminStatus() async {
+    try {
+      // Get current user
+      final user = AuthService().user;
+      if (user != null) {
+        // Get user document from Firestore to check admin status
+        final userData = await FirestoreService().getUser(user.uid);
+        setState(() {
+          isAdmin = userData.isAdmin == true;
+          isLoading =
+              true; // Make sure we're still showing loading while checking
+        });
+        // Load products after determining admin status
+        _loadProducts();
+      } else {
+        _loadProducts(); // Not logged in, just load regular products
+      }
+    } catch (e) {
+      print('Error checking admin status: $e');
+      _loadProducts(); // Fallback to loading regular products
+    }
   }
 
   Future<void> _loadProducts() async {
@@ -54,10 +81,15 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
     }
   }
 
-  // Fetch products from Firestore
+  // Fetch products from Firestore based on user role and view mode
   fetchedProducts() async {
-    dynamic products = await FirestoreService().getProductList();
-    return products;
+    if (isAdmin && viewAsAdmin) {
+      // Admin sees pending products when in admin view mode
+      return await FirestoreService().getProductPending();
+    } else {
+      // Regular users or admins in normal view see approved products
+      return await FirestoreService().getProductList();
+    }
   }
 
   // Search nearby products based on current location
@@ -142,13 +174,67 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 0, // Hide standard AppBar
+        actions: [], // No actions in hidden AppBar
+      ),
       bottomNavigationBar: BottomNavBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 45,
-            ),
+            SizedBox(height: 45),
+
+            // Admin view toggle
+            if (isAdmin)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(
+                  children: [
+                    // Admin badge
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        'ADMIN',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(width: 10),
+
+                    // Toggle switch
+                    Switch(
+                      value: viewAsAdmin,
+                      onChanged: (bool value) {
+                        setState(() {
+                          viewAsAdmin = value;
+                          isLoading = true;
+                        });
+                        _loadProducts();
+                      },
+                      activeColor: Colors.red,
+                    ),
+
+                    Text(
+                      viewAsAdmin ? 'Admin View' : 'User View',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
             Container(
               height: 30,
               width: double.maxFinite,
@@ -185,6 +271,33 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                 ),
               ),
             ),
+
+            // Admin view explanation
+            if (isAdmin && viewAsAdmin)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.amber.shade700),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, color: Colors.amber.shade800),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Admin view: Showing products pending approval',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             // Location filter status text if enabled
             if (locationErrorMessage != null)
