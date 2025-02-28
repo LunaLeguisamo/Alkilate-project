@@ -33,8 +33,8 @@ class User {
     this.products = const [],
     this.rating = 0.0,
     this.isAdmin = false,
-  })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now();
+  }) : dateCreated = dateCreated ?? DateTime.now(),
+       modifiedDate = modifiedDate ?? DateTime.now();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -50,11 +50,9 @@ class Product {
   final String description;
   final String brand;
   final String category;
-  @JsonKey(
-    fromJson: _latLngFromJson,
-    toJson: _latLngToJson,
-  )
+  @JsonKey(fromJson: _latLngFromJson, toJson: _latLngToJson)
   final LatLng? location;
+  final String geoHash;
   final double price;
   final String time;
   bool availability;
@@ -82,6 +80,7 @@ class Product {
     this.brand = '',
     this.category = '',
     this.location,
+    this.geoHash = '',
     this.price = 0.0,
     this.time = '',
     this.availability = false,
@@ -92,15 +91,15 @@ class Product {
     this.message = '',
     this.comments = const [],
     this.pictures = const [
-      'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e'
+      'https://firebasestorage.googleapis.com/v0/b/alkilate-a4fbc.firebasestorage.app/o/images.jpg?alt=media&token=b7a596a5-3663-4bd9-a542-396e7367641e',
     ],
     this.bankAccount = '',
     this.availableDates = const [],
-  })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now(),
-        id = id ?? Uuid().v4(),
-        disponibleFrom = dateCreated ?? DateTime.now(),
-        disponibleTo = dateCreated ?? DateTime.now();
+  }) : dateCreated = dateCreated ?? DateTime.now(),
+       modifiedDate = modifiedDate ?? DateTime.now(),
+       id = id ?? Uuid().v4(),
+       disponibleFrom = dateCreated ?? DateTime.now(),
+       disponibleTo = dateCreated ?? DateTime.now();
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
@@ -114,10 +113,7 @@ class Product {
   // Helper function to convert LatLng to JSON
   static Map<String, dynamic>? _latLngToJson(LatLng? location) {
     if (location == null) return null;
-    return {
-      'lat': location.latitude,
-      'lng': location.longitude,
-    };
+    return {'lat': location.latitude, 'lng': location.longitude};
   }
 }
 
@@ -145,9 +141,9 @@ class Order {
     this.productImage = '',
     this.totalPrice = 0.0,
     this.status = '',
-  })  : fromDate = fromDate ?? DateTime.now(),
-        untilDate = untilDate ?? DateTime.now(),
-        id = id ?? Uuid().v4();
+  }) : fromDate = fromDate ?? DateTime.now(),
+       untilDate = untilDate ?? DateTime.now(),
+       id = id ?? Uuid().v4();
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -171,9 +167,9 @@ class Comment {
     this.product = '',
     this.text = '',
     this.rating = 0.0,
-  })  : dateCreated = dateCreated ?? DateTime.now(),
-        modifiedDate = modifiedDate ?? DateTime.now(),
-        id = id ?? Uuid().v4();
+  }) : dateCreated = dateCreated ?? DateTime.now(),
+       modifiedDate = modifiedDate ?? DateTime.now(),
+       id = id ?? Uuid().v4();
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);

@@ -105,7 +105,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   // Date Range Selector
                   _buildDateRangeSelector(),
                   const SizedBox(height: 20),
-
+                  LocationPickerWidget(
+                    onLocationSelected: (LatLng location) {
+                      print('Selected location: $location');
+                      _selectedLocation =
+                          location; // Save the location to state
+                    },
+                  ),
                   SizedBox(height: 20),
                   _buildTextField(
                       descriptionController, 'Write the description',
@@ -388,8 +394,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         deposit: double.parse(depositController.text),
         bankAccount: bankAccountController.text,
         pictures: imageUrls,
-        location: _selectedLocation ??
-            LatLng(0, 0), // Provide a default value or handle null case
+        location: _selectedLocation ?? LatLng(0, 0),
         disponibleFrom: _selectedDateRange!.start, // Add start date
         disponibleTo: _selectedDateRange!.end, // Add end date
       );

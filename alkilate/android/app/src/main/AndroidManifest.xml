@@ -1,15 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:label="alkilate"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"> <!-- Moved inside the <application> tag -->
 
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAqID3_Eg_-rT_-rJaTXaDF58sYf11YDQY" />
+            android:value="AIzaSyC2ZPTW1cPz3RRhZ9IeD7D9GT5Rej4J-hQ" />
 
         <activity
             android:name=".MainActivity"

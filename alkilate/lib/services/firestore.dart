@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:alkilate/services/models.dart' as app_models;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'dart:math';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -119,6 +120,23 @@ class FirestoreService {
     var approvedProducts = snapshot.docs
         .where((doc) =>
             doc.data()['approved'] == true) // Filter by 'approved' field
+        .map((doc) =>
+            app_models.Product.fromJson(doc.data())) // Map to Product model
+        .toList(); // Convert to List
+
+    return approvedProducts;
+  }
+
+  Future<List<app_models.Product>> getProductPending() async {
+    var ref = _db.collection('products');
+
+    // Fetch the documents from the collection
+    var snapshot = await ref.get();
+
+    // Filter documents where 'approved' is true
+    var approvedProducts = snapshot.docs
+        .where((doc) => doc.data()['approved'] == false)
+        .where((doc) => doc.data()['rejected'] == false)
         .map((doc) =>
             app_models.Product.fromJson(doc.data())) // Map to Product model
         .toList(); // Convert to List
@@ -289,5 +307,86 @@ class FirestoreService {
         'isAdmin': false,
       });
     }
+  }
+
+  Future<List<app_models.Product>> getProductsByFilter(
+      double lat, double lng, double radiusInKm) async {
+    final bounds = getBoundsForRadius(lat, lng, radiusInKm);
+
+    // Query using dot notation for nested map fields
+    final snapshot = await FirebaseFirestore.instance
+        .collection('products')
+        .where('location.lat', isGreaterThanOrEqualTo: bounds['minLat'])
+        .where('location.lat', isLessThanOrEqualTo: bounds['maxLat'])
+        .where('approved', isEqualTo: true)
+        .get();
+
+    // Filter documents by longitude and distance
+    final filteredDocs = snapshot.docs.where((doc) {
+      final location = doc.data()['location'] as Map<String, dynamic>?;
+      final docLat = location?['lat'] as double?;
+      final docLng = location?['lng'] as double?;
+
+      return docLat != null &&
+          docLng != null &&
+          docLng >= bounds['minLng']! &&
+          docLng <= bounds['maxLng']! &&
+          _calculateDistance(lat, lng, docLat, docLng) <= radiusInKm;
+    }).toList();
+
+    return filteredDocs
+        .map((doc) => app_models.Product.fromJson(doc.data()))
+        .toList();
+  }
+
+  /// Haversine distance calculation
+  double _calculateDistance(
+      double lat1, double lng1, double lat2, double lng2) {
+    const earthRadius = 6371.0; // Kilometers
+
+    final dLat = _degreesToRadians(lat2 - lat1);
+    final dLon = _degreesToRadians(lng2 - lng1);
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degreesToRadians(lat1)) *
+            cos(_degreesToRadians(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  double _degreesToRadians(double degrees) => degrees * pi / 180;
+
+  /// Calculate bounding box for a given point and radius
+  Map<String, double> getBoundsForRadius(
+      double lat, double lng, double radiusInKm) {
+    // Earth's radius in km
+    const double earthRadius = 6371.0;
+
+    // Convert radius from km to radians
+    double radiusInRadians = radiusInKm / earthRadius;
+
+    // Convert lat/lng to radians
+    double latRad = lat * (pi / 180);
+    double lngRad = lng * (pi / 180);
+
+    // Calculate lat bounds
+    double minLat = latRad - radiusInRadians;
+    double maxLat = latRad + radiusInRadians;
+
+    // Calculate lng bounds (accounting for longitude getting smaller at higher latitudes)
+    double latDelta = asin(sin(radiusInRadians) / cos(latRad));
+    double minLng = lngRad - latDelta;
+    double maxLng = lngRad + latDelta;
+
+    // Convert back to degrees
+    return {
+      'minLat': minLat * (180 / pi),
+      'maxLat': maxLat * (180 / pi),
+      'minLng': minLng * (180 / pi),
+      'maxLng': maxLng * (180 / pi),
+    };
   }
 }
