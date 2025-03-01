@@ -33,8 +33,8 @@ class User {
     this.products = const [],
     this.rating = 0.0,
     this.isAdmin = false,
-  }) : dateCreated = dateCreated ?? DateTime.now(),
-       modifiedDate = modifiedDate ?? DateTime.now();
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -63,6 +63,7 @@ class Product {
   final String message;
   final DateTime disponibleFrom;
   final DateTime disponibleTo;
+  final List<DateTime> unavailableDates;
   final List<Map<String, dynamic>> comments;
   final List<String> pictures;
   final String bankAccount;
@@ -84,6 +85,7 @@ class Product {
     this.price = 0.0,
     this.time = '',
     this.availability = false,
+    this.unavailableDates = const [],
     this.deposit = 0.0,
     this.rating = 5.0,
     this.approved = false,
@@ -95,11 +97,11 @@ class Product {
     ],
     this.bankAccount = '',
     this.availableDates = const [],
-  }) : dateCreated = dateCreated ?? DateTime.now(),
-       modifiedDate = modifiedDate ?? DateTime.now(),
-       id = id ?? Uuid().v4(),
-       disponibleFrom = dateCreated ?? DateTime.now(),
-       disponibleTo = dateCreated ?? DateTime.now();
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now(),
+        id = id ?? Uuid().v4(),
+        disponibleFrom = dateCreated ?? DateTime.now(),
+        disponibleTo = dateCreated ?? DateTime.now();
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
@@ -141,9 +143,9 @@ class Order {
     this.productImage = '',
     this.totalPrice = 0.0,
     this.status = '',
-  }) : fromDate = fromDate ?? DateTime.now(),
-       untilDate = untilDate ?? DateTime.now(),
-       id = id ?? Uuid().v4();
+  })  : fromDate = fromDate ?? DateTime.now(),
+        untilDate = untilDate ?? DateTime.now(),
+        id = id ?? Uuid().v4();
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
@@ -167,9 +169,9 @@ class Comment {
     this.product = '',
     this.text = '',
     this.rating = 0.0,
-  }) : dateCreated = dateCreated ?? DateTime.now(),
-       modifiedDate = modifiedDate ?? DateTime.now(),
-       id = id ?? Uuid().v4();
+  })  : dateCreated = dateCreated ?? DateTime.now(),
+        modifiedDate = modifiedDate ?? DateTime.now(),
+        id = id ?? Uuid().v4();
 
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);

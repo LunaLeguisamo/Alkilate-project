@@ -7,19 +7,19 @@ class AvailabilityCalendar extends StatefulWidget {
   final DateTime endDay;
 
   const AvailabilityCalendar({
-    Key? key,
+    super.key,
     required this.startDay,
     required this.endDay,
-  }) : super(key: key);
+  });
 
   @override
-  _AvailabilityCalendarState createState() => _AvailabilityCalendarState();
+  AvailabilityCalendarState createState() => AvailabilityCalendarState();
 }
 
-class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
+class AvailabilityCalendarState extends State<AvailabilityCalendar> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
-  Set<DateTime> not_available_days = {};
+  Set<DateTime> notAvailableDays = {};
 
   @override
   void initState() {
@@ -37,10 +37,10 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
           .map((doc) => (doc['date'] as Timestamp).toDate())
           .toSet();
       setState(() {
-        not_available_days = dates;
+        notAvailableDays = dates;
       });
     } catch (e) {
-      print("Error fetching unavailable days: $e");
+      print('Error fetching unavailable days: $e');
     }
   }
 
@@ -62,7 +62,7 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
           bool isAvailable =
               day.isAfter(widget.startDay.subtract(const Duration(days: 1))) &&
                   day.isBefore(widget.endDay.add(const Duration(days: 1))) &&
-                  !not_available_days.contains(day);
+                  !notAvailableDays.contains(day);
           return Container(
             margin: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
