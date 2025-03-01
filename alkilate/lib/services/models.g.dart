@@ -48,18 +48,11 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       id: json['id'] as String?,
-      dateCreated: json['dateCreated'] == null
-          ? null
-          : DateTime.parse(json['dateCreated'] as String),
-      modifiedDate: json['modifiedDate'] == null
-          ? null
-          : DateTime.parse(json['modifiedDate'] as String),
-      disponibleFrom: json['disponibleFrom'] == null
-          ? null
-          : DateTime.parse(json['disponibleFrom'] as String),
-      disponibleTo: json['disponibleTo'] == null
-          ? null
-          : DateTime.parse(json['disponibleTo'] as String),
+      dateCreated: Product._timestampToDateTime(json['dateCreated']),
+      modifiedDate: Product._timestampToDateTime(json['modifiedDate']),
+      disponibleFrom: Product._timestampToDateTime(json['disponibleFrom']),
+      disponibleTo: Product._timestampToDateTime(json['disponibleTo']),
+      rented: Product._rentedFromJson(json['rented'] as List?),
       owner: json['owner'] as String? ?? '',
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
@@ -67,6 +60,7 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       category: json['category'] as String? ?? '',
       location:
           Product._latLngFromJson(json['location'] as Map<String, dynamic>?),
+      geoHash: json['geoHash'] as String? ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       time: json['time'] as String? ?? '',
       availability: json['availability'] as bool? ?? false,
@@ -94,14 +88,16 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
 
 Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'id': instance.id,
-      'dateCreated': instance.dateCreated.toIso8601String(),
-      'modifiedDate': instance.modifiedDate.toIso8601String(),
+      'dateCreated': Product._dateTimeToTimestamp(instance.dateCreated),
+      'modifiedDate': Product._dateTimeToTimestamp(instance.modifiedDate),
+      'rented': Product._rentedToJson(instance.rented),
       'owner': instance.owner,
       'name': instance.name,
       'description': instance.description,
       'brand': instance.brand,
       'category': instance.category,
       'location': Product._latLngToJson(instance.location),
+      'geoHash': instance.geoHash,
       'price': instance.price,
       'time': instance.time,
       'availability': instance.availability,
@@ -110,8 +106,8 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'approved': instance.approved,
       'rejected': instance.rejected,
       'message': instance.message,
-      'disponibleFrom': instance.disponibleFrom.toIso8601String(),
-      'disponibleTo': instance.disponibleTo.toIso8601String(),
+      'disponibleFrom': Product._dateTimeToTimestamp(instance.disponibleFrom),
+      'disponibleTo': Product._dateTimeToTimestamp(instance.disponibleTo),
       'comments': instance.comments,
       'pictures': instance.pictures,
       'bankAccount': instance.bankAccount,

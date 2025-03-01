@@ -8,7 +8,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:location/location.dart';
 
 class ProductSearchScreen extends StatefulWidget {
-  const ProductSearchScreen({super.key});
+  final List<Product>? searchResults;
+
+  const ProductSearchScreen({super.key, this.searchResults = const []});
 
   @override
   ProductSearchScreenState createState() => ProductSearchScreenState();
@@ -39,36 +41,58 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAdminStatus();
+
+    // Initialize directly from search results
+    if (widget.searchResults != null && widget.searchResults!.isNotEmpty) {
+      products = widget.searchResults!;
+      isLoading = false;
+    }
+
+    _checkAdminStatus(); // Only check admin status (no automatic load)
   }
 
-  // Check if the current user is an admin
   Future<void> _checkAdminStatus() async {
     try {
-      // Get current user
       final user = AuthService().user;
+
+      // Only proceed if no search results
+      if (widget.searchResults != null && widget.searchResults!.isNotEmpty) {
+        setState(() => isLoading = false);
+        return;
+      }
+
       if (user != null) {
-        // Get user document from Firestore to check admin status
         final userData = await FirestoreService().getUser(user.uid);
-        setState(() {
-          isAdmin = userData.isAdmin == true;
-          isLoading =
-              true; // Make sure we're still showing loading while checking
-        });
-        // Load products after determining admin status
+        setState(() => isAdmin = userData.isAdmin == true);
+      }
+
+      // Only load products if no search results
+      if (widget.searchResults == null || widget.searchResults!.isEmpty) {
         _loadProducts();
-      } else {
-        _loadProducts(); // Not logged in, just load regular products
       }
     } catch (e) {
       print('Error checking admin status: $e');
-      _loadProducts(); // Fallback to loading regular products
+      if (widget.searchResults == null || widget.searchResults!.isEmpty) {
+        _loadProducts();
+      }
     }
   }
 
-  Future<void> _loadProducts() async {
+  // Modify this method to accept filter parameters
+  Future<void> _loadProducts(
+      {String? searchQuery,
+      String? filterCategory,
+      DateTime? filterDate}) async {
     try {
-      List<Product> products = await fetchedProducts();
+      setState(() {
+        isLoading = true;
+      });
+
+      List<Product> products = await fetchedProducts(
+          searchQuery: searchQuery,
+          filterCategory: filterCategory,
+          filterDate: filterDate);
+
       setState(() {
         this.products = products;
         isLoading = false;
@@ -81,14 +105,23 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
     }
   }
 
-  // Fetch products from Firestore based on user role and view mode
-  fetchedProducts() async {
+  // Update fetchedProducts to use filters
+  fetchedProducts(
+      {String? searchQuery,
+      String? filterCategory,
+      DateTime? filterDate}) async {
     if (isAdmin && viewAsAdmin) {
       // Admin sees pending products when in admin view mode
       return await FirestoreService().getProductPending();
     } else {
-      // Regular users or admins in normal view see approved products
-      return await FirestoreService().getProductList();
+      // Regular users or admins in normal view see approved products with filters
+      return await FirestoreService().getProductList(
+        name: searchQuery,
+        category: filterCategory != 'Category'
+            ? filterCategory
+            : null, // Don't filter if default is selected
+        date: filterDate,
+      );
     }
   }
 
@@ -269,6 +302,11 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
+                controller: searchController,
+                onSubmitted: (value) {
+                  // Search by name
+                  _loadProducts(searchQuery: value);
+                },
               ),
             ),
 
@@ -558,7 +596,14 @@ class ProductSearchScreenState extends State<ProductSearchScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Apply non-location filters here
+                    // Apply non-location filters
+                    _loadProducts(
+                      searchQuery: searchController.text.isNotEmpty
+                          ? searchController.text
+                          : null,
+                      filterCategory: category != 'Category' ? category : null,
+                      filterDate: selectedDate,
+                    );
                     Navigator.of(context).pop();
                   },
                   child: Text('Apply Filters'),

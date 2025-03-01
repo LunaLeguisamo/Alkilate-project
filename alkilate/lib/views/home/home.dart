@@ -1,9 +1,99 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:alkilate/shared/shared.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:alkilate/views/products/product_search/product_search.dart'; // Adjust path as needed
+import 'package:alkilate/services/services.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  // Send search query to suggestions API
+  Future<void> _sendSearchQuery(String query) async {
+    if (query.isEmpty) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      print('Sending request to API with query: $query');
+
+      final response = await http.post(
+        Uri.parse('https://alkilate-project.onrender.com/suggestions'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'query': query,
+        }),
+      );
+
+      // Print full response details
+      print('Response status code: ${response.statusCode}');
+      print('Response headers: ${response.headers}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final List<dynamic> rawData = jsonDecode(response.body);
+
+        // Convert to Product objects immediately
+        final List<Product> products = rawData
+            .map((item) {
+              try {
+                return Product.fromJson(item);
+              } catch (e) {
+                print('Error parsing product: $e');
+                return Product(); // Return empty product as fallback
+              }
+            })
+            .where((p) => p.id.isNotEmpty)
+            .toList(); // Filter valid products
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProductSearchScreen(
+              searchResults: products,
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage =
+              'Failed to get suggestions. Status: ${response.statusCode}';
+        });
+        print('API Error: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception during API call: $e');
+      setState(() {
+        _errorMessage = 'Error: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +136,17 @@ class HomeScreen extends StatelessWidget {
                   width: double.maxFinite,
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: SearchBar(
-                    leading: SvgPicture.asset(
-                      'assets/svg/search.svg',
-                      width: 14.4,
-                      height: 14.4,
-                    ),
+                    controller: _searchController,
+                    leading: _isLoading
+                        ? SizedBox(
+                            width: 14.4,
+                            height: 14.4,
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                        : SvgPicture.asset(
+                            'assets/svg/search.svg',
+                            width: 14.4,
+                            height: 14.4,
+                          ),
                     trailing: <Widget>[
                       Tooltip(
                         message: 'Filter',
@@ -72,11 +168,28 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
+                    onSubmitted: (value) {
+                      _sendSearchQuery(value);
+                    },
                   ),
                 ),
+
+                // Show error message if there was an API error
+                if (_errorMessage != null)
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                    child: Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+
                 const SizedBox(height: 32),
               ],
             ),
+
+            // Rest of your UI remains the same
             SizedBox(
               width: double.infinity,
               child: Column(

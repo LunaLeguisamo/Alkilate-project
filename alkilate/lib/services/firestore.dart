@@ -144,21 +144,40 @@ class FirestoreService {
     }
   }
 
-  Future<List<app_models.Product>> getProductList() async {
-    var ref = _db.collection('products');
+  Future<List<app_models.Product>> getProductList(
+      {String? name, String? category, DateTime? date}) async {
+    Query query = _db.collection('products').where('approved', isEqualTo: true);
 
-    // Fetch the documents from the collection
-    var snapshot = await ref.get();
+    // Apply category filter if provided
+    if (category != null) {
+      query = query.where('category', isEqualTo: category);
+    }
 
-    // Filter documents where 'approved' is true
-    var approvedProducts = snapshot.docs
-        .where((doc) =>
-            doc.data()['approved'] == true) // Filter by 'approved' field
+    // Apply date filter if provided
+    if (date != null) {
+      query = query
+          .where('disponibleFrom', isLessThanOrEqualTo: date)
+          .where('disponibleTo', isGreaterThanOrEqualTo: date);
+    }
+
+    // Get the documents
+    final snapshot = await query.get();
+
+    // Convert to Product objects
+    List<app_models.Product> products = snapshot.docs
         .map((doc) =>
-            app_models.Product.fromJson(doc.data())) // Map to Product model
-        .toList(); // Convert to List
+            app_models.Product.fromJson(doc.data() as Map<String, dynamic>))
+        .toList();
 
-    return approvedProducts;
+    // Apply name filter in memory if provided (Firestore doesn't support case-insensitive search)
+    if (name != null && name.isNotEmpty) {
+      products = products
+          .where((product) =>
+              product.name.toLowerCase().contains(name.toLowerCase()))
+          .toList();
+    }
+
+    return products;
   }
 
   Future<List<app_models.Product>> getProductPending() async {
