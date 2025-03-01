@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Product(); // Return empty product as fallback
               }
             })
-            .where((p) => p.id.isNotEmpty)
+            .where((p) => p.name.isNotEmpty)
             .toList(); // Filter valid products
 
         Navigator.of(context).push(
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       )
                     ],
-                    hintText: 'Search',
+                    hintText: 'Use Our IA Searchbar',
                     hintStyle: WidgetStateProperty.all(
                         TextStyle(color: Color(0xFF808080))),
                     backgroundColor: WidgetStateProperty.all(Colors.white),
