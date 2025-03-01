@@ -85,6 +85,7 @@ class Product {
     toJson: _dateTimeToTimestamp,
   )
   final DateTime disponibleTo;
+  final List<DateTime> unavailableDates;
   final List<Map<String, dynamic>> comments;
   final List<String> pictures;
   final String bankAccount;
@@ -107,6 +108,7 @@ class Product {
     this.price = 0.0,
     this.time = '',
     this.availability = false,
+    this.unavailableDates = const [],
     this.deposit = 0.0,
     this.rating = 5.0,
     this.approved = false,
