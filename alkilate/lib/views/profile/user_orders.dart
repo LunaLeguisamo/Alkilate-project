@@ -26,7 +26,9 @@ class UserOrdersScreenState extends State<UserOrdersScreen> {
           var orders = snapshot.data!;
           return OrderListScreen(orders: orders);
         } else {
-          return const Text('No orders found for this user');
+          return Center(
+            child: ErrorMessage(message: 'No orders found for this user'),
+          );
         }
       },
     );

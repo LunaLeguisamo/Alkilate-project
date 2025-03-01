@@ -26,7 +26,9 @@ class UserProductsScreenState extends State<UserProductsScreen> {
           var products = snapshot.data!;
           return ProductsListScreen(products: products);
         } else {
-          return const Text('No products found for this user');
+          return Center(
+            child: ErrorMessage(message: 'No products found for this user'),
+          );
         }
       },
     );

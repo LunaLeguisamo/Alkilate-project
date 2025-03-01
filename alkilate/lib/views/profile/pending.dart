@@ -31,13 +31,13 @@ class UserPendingScreenState extends State<UserPendingScreen> {
           var orders = snapshot.data!;
           if (orders.isEmpty) {
             return const Center(
-              child: Text('No orders found for this user'),
+              child: ErrorMessage(message: 'No orders found for this user'),
             );
           }
           return OrderListScreen(orders: orders);
         } else {
           return const Center(
-            child: Text('No orders found for this user'),
+            child: ErrorMessage(message: 'No orders found for this user'),
           );
         }
       },
