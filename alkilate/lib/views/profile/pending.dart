@@ -223,6 +223,11 @@ class OrderListScreenState extends State<OrderListScreen> {
                                       try {
                                         await FirestoreService()
                                             .acceptOrder(order.id, order.buyer);
+                                        await FirestoreService()
+                                            .addRentedDaysToProduct(
+                                                order.productId,
+                                                order.fromDate,
+                                                order.untilDate);
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(

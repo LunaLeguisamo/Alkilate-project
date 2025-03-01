@@ -442,4 +442,28 @@ class FirestoreService {
       'maxLng': maxLng * (180 / pi),
     };
   }
+
+  /// add rented days to a product
+  Future<void> addRentedDaysToProduct(
+      String productId, DateTime startDate, DateTime endDate) async {
+    final firestore = FirebaseFirestore.instance;
+    final productRef = firestore.collection('products').doc(productId);
+    final batch = firestore.batch();
+
+    // Generate dates from startDate to endDate (inclusive)
+    final days = endDate.difference(startDate).inDays + 1;
+    final dates = List.generate(
+      days,
+      (index) => startDate
+          .add(Duration(days: index))
+          .toIso8601String()
+          .substring(0, 10),
+    );
+
+    batch.update(productRef, {
+      'rented': FieldValue.arrayUnion(dates),
+    });
+
+    await batch.commit(); // Commit the batch
+  }
 }

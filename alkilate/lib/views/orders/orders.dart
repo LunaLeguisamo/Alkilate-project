@@ -22,6 +22,8 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   GoogleMapController? mapController;
   final Set<Marker> _markers = {};
+  late DateTime startOrderDate;
+  late DateTime endOrderDate;
 
   @override
   void initState() {
@@ -64,116 +66,135 @@ class _OrderScreenState extends State<OrderScreen> {
       appBar: AppBar(
         title: Text('Order Details'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product details section
-            Text(
-              'Product: ${widget.product.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text('Price: \$${widget.product.price}'),
-
-            SizedBox(height: 20),
-            Text(
-              'Pickup Location:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-
-            // Map showing the product location
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(106, 158, 158, 158),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product details section
+              Text(
+                'Product: ${widget.product.name}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: widget.product.location ?? const LatLng(0, 0),
-                    zoom: 14,
-                  ),
-                  markers: _markers,
-                  onMapCreated: (GoogleMapController controller) {
-                    mapController = controller;
-                  },
-                ),
-              ),
-            ),
+              SizedBox(height: 8),
+              Text('Price: \$${widget.product.price.toStringAsFixed(2)} /day'),
+              SizedBox(height: 16),
 
-            SizedBox(height: 20),
-            Text(
-              'Coordinates: ${widget.product.location?.latitude.toStringAsFixed(6)}, ${widget.product.location?.longitude.toStringAsFixed(6)}',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-
-            SizedBox(height: 20),
-
-            // Checkout button
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                ),
-                onPressed: () async {
-                  Order order = Order(
-                    product: widget.product.name,
-                    productId: widget.product.id,
-                    seller: widget.product.owner,
-                    buyer: AuthService().user?.uid ?? '',
-                    status: 'pending',
-                    totalPrice: widget.product.price,
-                    fromDate: widget.product.disponibleFrom,
-                    untilDate: widget.product.disponibleTo,
-                    productImage: widget.product.pictures[0],
-                  );
-                  // Make an HTTP request to a specific URL
-                  final response = await http.post(
-                    Uri.parse('https://app-p7vfglazhq-uc.a.run.app/checkout'),
-                    headers: <String, String>{
-                      'Content-Type': 'application/json; charset=UTF-8',
-                    },
-                    body: jsonEncode(<String, dynamic>{
-                      'item': widget.product.name,
-                      'price': widget.product.price,
-                      'id': order.id,
-                      'seller': order.seller,
-                      'user': order.buyer,
-                    }),
-                  );
-                  if (response.statusCode == 200) {
-                    final responseData = jsonDecode(response.body);
-                    debugPrint('Order created: $responseData');
-
-                    FirestoreService().addOrder(order);
-                    FirestoreService().addOrderToUser(order);
-                    FirestoreService().addOrderToSeller(order);
-                    launchURL(context, jsonDecode(response.body));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to create order')),
-                    );
-                    throw Exception('Failed to create order');
-                  }
+              AvailabilityCalendar(
+                startDay: widget.product.disponibleFrom,
+                endDay: widget.product.disponibleTo,
+                rentedDates: widget.product.rented,
+                onDateRangeSelected: (DateTime start, DateTime end) {
+                  startOrderDate = start;
+                  endOrderDate = end;
                 },
-                child: Text('Proceed to Checkout'),
               ),
-            ),
-          ],
+              SizedBox(height: 16),
+              Text(
+                'Pickup Location:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              // Map showing the product location
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(106, 158, 158, 158),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: widget.product.location ?? const LatLng(0, 0),
+                      zoom: 14,
+                    ),
+                    markers: _markers,
+                    onMapCreated: (GoogleMapController controller) {
+                      mapController = controller;
+                    },
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+              Text(
+                'Coordinates: ${widget.product.location?.latitude.toStringAsFixed(6)}, ${widget.product.location?.longitude.toStringAsFixed(6)}',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+
+              SizedBox(height: 30),
+
+              // Checkout button
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  ),
+                  onPressed: () async {
+                    //calculate price only by price/days the other tipes are not implemented and are beeing asumed as 1 day
+                    //needs to be implemented in the future by ading a clock to select hours and minutes after the calendar
+                    //so time can be calculated in hours instead of days and other types of rent periods cand be converted to
+                    //hours and calculated as well
+                    final days =
+                        endOrderDate.difference(startOrderDate).inDays + 1;
+                    final totalPrice = days * widget.product.price;
+                    Order order = Order(
+                      product: widget.product.name,
+                      productId: widget.product.id,
+                      seller: widget.product.owner,
+                      buyer: AuthService().user?.uid ?? '',
+                      status: 'pending',
+                      totalPrice: totalPrice,
+                      fromDate: startOrderDate,
+                      untilDate: endOrderDate,
+                      productImage: widget.product.pictures[0],
+                    );
+                    // Make an HTTP request to a specific URL
+                    final response = await http.post(
+                      Uri.parse('https://app-p7vfglazhq-uc.a.run.app/checkout'),
+                      headers: <String, String>{
+                        'Content-Type': 'application/json; charset=UTF-8',
+                      },
+                      body: jsonEncode(<String, dynamic>{
+                        'item': widget.product.name,
+                        'price': totalPrice,
+                        'id': order.id,
+                        'seller': order.seller,
+                        'user': order.buyer,
+                      }),
+                    );
+                    if (response.statusCode == 200) {
+                      final responseData = jsonDecode(response.body);
+                      debugPrint('Order created: $responseData');
+
+                      FirestoreService().addOrder(order);
+                      FirestoreService().addOrderToUser(order);
+                      FirestoreService().addOrderToSeller(order);
+                      launchURL(context, jsonDecode(response.body));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to create order')),
+                      );
+                      throw Exception('Failed to create order');
+                    }
+                  },
+                  child: Text('Proceed to Checkout'),
+                ),
+              ),
+              SizedBox(height: 20), // Added bottom padding
+            ],
+          ),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:alkilate/services/services.dart';
 import 'package:alkilate/views/orders/orders.dart';
+import 'package:alkilate/shared/shared.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -409,9 +410,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
         const Spacer(),
         ElevatedButton.icon(
-          onPressed: () {
-            print('Button');
-          },
+          onPressed: _showAvailabilityCalendar,
           icon: SvgPicture.asset(
             'assets/svg/calendar.svg',
             width: 14.2,
@@ -572,6 +571,93 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
       user: AuthService().user?.displayName ?? '',
     );
     FirestoreService().addCommentToProduct(comment);
+  }
+
+  // Add this method to show the calendar popup
+  void _showAvailabilityCalendar() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          insetPadding: EdgeInsets.all(16),
+          child: Container(
+            width: double.maxFinite,
+            height:
+                MediaQuery.of(context).size.height * 0.7, // Increased height
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Product Availability',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8), // Reduced vertical spacing
+                // Legend for calendar colors
+                Row(
+                  children: [
+                    _buildLegendItem(Colors.green[100]!, 'Available'),
+                    SizedBox(width: 16),
+                    _buildLegendItem(Colors.grey[300]!, 'Not Available'),
+                  ],
+                ),
+                SizedBox(height: 8), // Reduced vertical spacing
+                Divider(),
+                // Using Expanded to ensure the calendar takes available space
+                Expanded(
+                  child: SingleChildScrollView(
+                    // Add scrolling capability
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: AvailabilityCalendar(
+                        startDay: widget.product.disponibleFrom,
+                        endDay: widget.product.disponibleTo,
+                        rentedDates: widget.product.rented,
+                        // Making it non-interactive
+                        onDateRangeSelected: null,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper method for the legend items
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12),
+        ),
+      ],
+    );
   }
 }
 
