@@ -102,7 +102,6 @@ Alkilate is a modern mobile application that connects people who want to rent ou
 lib/
 ├── main.dart          # Entry point
 ├── views/             # UI screens and widgets
-├── models/            # Data models
 ├── services/          # Backend services
 └── shared/            # Shared components
 ```
