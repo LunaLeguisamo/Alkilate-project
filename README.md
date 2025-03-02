@@ -235,7 +235,7 @@ POST /checkout/payment
 }
 ````
 
-# Alkilate Product Suggestions API
+# Product Suggestions API
 
 This project provides a Flask-based API for suggesting products based on a query. It uses the `sentence-transformers` library to encode product information and queries, and then finds the most similar products.
 
