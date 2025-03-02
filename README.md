@@ -22,6 +22,8 @@
      - 7.3.2 [Admin Endpoints](#admin-endpoints)
      - 7.3.3 [Payment Endpoints](#payment-endpoints)
    - 7.4 [Error Handling](#error-handling)
+   - 7.5 [Product Suggestions API](#product-suggestions-api)
+
 
 Alkilate is a modern mobile application that connects people who want to rent out their items with those who need them temporarily. Built with Flutter and Firebase, this platform enables users to list products, manage availability with a calendar system, and process rental orders seamlessly.
 
@@ -233,3 +235,79 @@ POST /checkout/payment
 }
 ````
 
+# Alkilate Product Suggestions API
+
+This project provides a Flask-based API for suggesting products based on a query. It uses the `sentence-transformers` library to encode product information and queries, and then finds the most similar products.
+
+## Setup
+
+1. Clone the repository from the IA-1.5 branch.
+2. Install the required dependencies:
+    ```bash
+    pip install flask sentence-transformers requests numpy
+    ```
+
+## Running the API
+
+To start the API, run the following command:
+```bash
+python app.py
+```
+The API will be available at `http://0.0.0.0:1000`.
+
+## Endpoints
+
+### POST /suggestions
+
+This endpoint returns product suggestions based on a query.
+
+#### Request
+
+- **URL:** `/suggestions`
+- **Method:** `POST`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+    ```json
+    {
+        "query": "your search query"
+    }
+    ```
+
+#### Response
+
+- **Success Response:**
+    - **Code:** 200
+    - **Content:**
+        ```json
+        [
+            {
+                "name": "Product Name",
+                "category": "Product Category",
+                "description": "Product Description"
+            },
+            ...
+        ]
+        ```
+- **Error Response:**
+    - **Code:** 400
+    - **Content:**
+        ```json
+        {
+            "error": "No query provided"
+        }
+        ```
+
+## How It Works
+
+1. The API loads a pre-trained `sentence-transformers` model (`all-MiniLM-L6-v2`) when it starts.
+2. It fetches product data from an external URL.
+3. When a query is received, it encodes the product information and the query into vectors.
+4. It calculates the cosine similarity between the query vector and the product vectors.
+5. It returns the top 3 most similar products with a similarity score above a threshold.
+
+## Dependencies
+
+- Flask
+- sentence-transformers
+- requests
+- numpy
