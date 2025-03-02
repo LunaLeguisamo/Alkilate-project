@@ -40,10 +40,9 @@ Alkilate is a modern mobile application that connects people who want to rent ou
 
 ## Technologies Used  
 - **Frontend**: Flutter/Dart  
-- **Backend**: Firebase (Firestore, Authentication)  
+- **Backend**: Firebase (Firestore, Authentication, firefunction api)  
 - **Maps**: Google Maps API  
-- **Payment Processing**: Third-party payment integration  
-- **State Management**: Provider pattern  
+- **Payment Processing**: mercadopago payment integration  
 
 ---
 
